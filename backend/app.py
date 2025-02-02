@@ -7,6 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Blueprints
+import routes.post_routes
 app.register_blueprint(post_bp)
 
 # End Blueprints

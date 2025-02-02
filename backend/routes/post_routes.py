@@ -12,9 +12,8 @@
     /api/posts/reportPost
 """
 from flask import request, jsonify
-from .posts import post_bp
-from models import Post
 from config import db
+from .posts import post_bp
 
 @post_bp.route('/getAllPosts', methods=["GET"])
 def get_all_posts():
@@ -22,6 +21,6 @@ def get_all_posts():
     try:
         collection = db.posts
         documents = list(collection.find({}, {"_id": 0}))
-        return jsonify([doc for doc in documents])
+        return jsonify(documents)
     except Exception as e:
-        return f"ERROR:{e}"
+        return jsonify({"error": str(e)}), 500
