@@ -9,8 +9,8 @@ class Post(me.Document):
     author = me.StringField(required=True) # To change when login system is implemented: originally, me.ReferenceField("User", reverse_delete_rule=me.CASCADE)
     images = me.ListField(me.StringField())
     looking_for = me.StringField(required=True, choices=["programmer", "designer"])
-    # created_at = me.DateTimeField() # add functionality later
-    # updated_at = me.DateTimeField() # add functionality later
+    created_at = me.DateTimeField()
+    updated_at = me.DateTimeField()
 
     def to_json(self):
         return {
@@ -20,8 +20,8 @@ class Post(me.Document):
             "author": self.author, # str(self.author.id),
             "images": self.images,
             "looking_for": self.looking_for,
-            # "created_at": self.created_at, # add functionality later
-            # "updated_at": self.updated_at  # add functionality later
+            "created_at": self.created_at,
+            "updated_at": self.updated_at
         }
 
     meta = {
