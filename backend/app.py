@@ -1,14 +1,18 @@
 from flask import Flask
 from flask_cors import CORS
 from config import db
+from routes.posts import post_bp
 
 app = Flask(__name__)
 CORS(app)
 
 # Blueprints
+app.register_blueprint(post_bp)
 
 # End Blueprints
 
+
+# Home page
 @app.route("/", methods=["GET"])
 def home():
     return {"message": "Backend is working"}, 200
