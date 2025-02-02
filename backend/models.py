@@ -2,31 +2,31 @@ import mongoengine as me
 from config import db
 import datetime
 
+
 class Post(me.Document):
     title = me.StringField(required=True)
     content = me.StringField(required=True)
-    author = me.ReferenceField("User", reverse_delete_rule=me.CASCADE)
+    author = me.StringField(required=True) # To change when login system is implemented: originally, me.ReferenceField("User", reverse_delete_rule=me.CASCADE)
     images = me.ListField(me.StringField())
     looking_for = me.StringField(required=True, choices=["programmer", "designer"])
-    created_at = me.DateTimeField()
-    updated_at = me.DateTimeField()
+    # created_at = me.DateTimeField() # add functionality later
+    # updated_at = me.DateTimeField() # add functionality later
 
     def to_json(self):
         return {
             "id": str(self.id),
             "title": self.title,
             "content": self.content,
-            "author": str(self.author.id),
+            "author": self.author, # str(self.author.id),
             "images": self.images,
             "looking_for": self.looking_for,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at
+            # "created_at": self.created_at, # add functionality later
+            # "updated_at": self.updated_at  # add functionality later
         }
 
     meta = {
         "collection": "posts"
     }
-
 
 class User(me.Document):
     email = me.EmailField(unique=True, required=True)
