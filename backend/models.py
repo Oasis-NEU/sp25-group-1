@@ -34,6 +34,7 @@ class User(me.Document):
     first_name = me.StringField(required=True)
     last_name = me.StringField(required=True)
     settings = me.DictField(default={})
+    profile_picture = me.StringField()
     favorites = me.ListField(me.ReferenceField("Post", reverse_delete_rule=me.PULL))
     posts = me.ListField(me.ReferenceField("Post", reverse_delete_rule=me.CASCADE))
     role = me.StringField(required=True, choices=["programmer", "designer"])
@@ -48,6 +49,7 @@ class User(me.Document):
             "last_name": self.last_name,
             "role": self.role,
             "settings": self.settings,
+            "profile_picture": self.profile_picture,
             "favorites": [str(post.id) for post in self.favorites],
             "posts": [str(post.id) for post in self.posts],
             "created_at": self.created_at,

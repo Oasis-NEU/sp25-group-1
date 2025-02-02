@@ -9,5 +9,11 @@ load_dotenv()
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/OasisDatabase")
 
 # Create a MongoDB client connection
-client = MongoClient(MONGO_URI)
-db = client.get_database("OasisDatabase")
+
+try:
+    client = MongoClient(MONGO_URI)
+    db = client.get_database("OasisDatabase")
+    print("Connected to MongoDB")
+except Exception as e:
+    print(f"Error connecting to MongoDB: {e}")
+    exit(1)
