@@ -1,21 +1,37 @@
 import Sidecard from "../components/Sidecard"
 import PostMainPage from "../components/PostMainPage"
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
+import { Context } from "../context/context"
 
 const Home = () => {
 
-  const [posts, setPosts] = useState(Array.from({ length: 10 }));
-  const [more, setMore] = useState(true);
+  const {posts} = useContext(Context);
+  const [displayedPosts, setDisplayedPosts] = useState([]);
+  const [more, setMore] = useState(false);
+  const [index, setIndex] = useState(10);
+
+  useEffect(() => {
+    if (posts.length > 0) {
+      const newPosts = posts.slice(0, 10);
+      setDisplayedPosts(newPosts);
+      setMore(posts.length > 10);
+    }
+  }, [posts]);
 
   const fetchMorePosts = () => {
-    if (posts.length >= 50) {
+    if (index >= posts.length) {
       setMore(false);
       return;
     }
-    setTimeout(() => {
-      setPosts([...posts, ...Array.from({ length: 5 })]);
-    }, 1000);
+
+    const newPosts = posts.slice(index, index + 10);
+    setDisplayedPosts([...displayedPosts, ...newPosts]);
+    setIndex(index + 10);
+
+    if (index + 10 >= posts.length) {
+      setMore(false);
+    }
   }
 
   return (
@@ -26,10 +42,10 @@ const Home = () => {
 
       <div className="w-3/5 flex flex-col items-center">
         <div className="mainBodyBackground rounded-2xl w-[95%] my-[3%] flex flex-col overflow-y-auto px-[3%]">
-          <InfiniteScroll dataLength={posts.length} next={fetchMorePosts} hasMore={more} loader={<h4>Loading...</h4>} endMessage={<p className="text-center text-white mb-3"><b>No More Posts!</b></p>}>
-            {posts.map((_, index) => (
+          <InfiniteScroll dataLength={displayedPosts.length} next={fetchMorePosts} hasMore={more} loader={<h4>Loading...</h4>} endMessage={<p className="text-center text-white mb-3"><b>No More Posts!</b></p>}>
+            {displayedPosts.map((post, index) => (
               <div className="w-full flex justify-center min-h-[50vh]" key={index}>
-                <PostMainPage />
+                <PostMainPage title={post.title}/>
               </div>
             ))}
           </InfiniteScroll>
