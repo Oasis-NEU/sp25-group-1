@@ -38,6 +38,8 @@ def create_post_designer():
             author = data.get('author'), # To change when login system is implemented
             images = data.get('images',[]),
             looking_for = data.get('looking_for'),
+            comments = [],
+            likes = 0,
             created_at = datetime.datetime.now(),
             updated_at = datetime.datetime.now()
             )
