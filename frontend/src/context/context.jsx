@@ -11,6 +11,7 @@ const ContextProvider = (props) => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const [posts, setPosts] = useState([]);
     const [token, setToken] = useState('');
+    const [userInfo, setUserInfo] = useState(undefined);
 
     const getPosts = async () => {
         try {

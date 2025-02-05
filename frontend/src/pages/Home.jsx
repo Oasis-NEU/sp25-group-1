@@ -1,4 +1,5 @@
 import Sidecard from "../components/Sidecard"
+import RightSideCard from "../components/RightSideCard"
 import PostMainPage from "../components/PostMainPage"
 import { useContext, useEffect, useState } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
@@ -36,12 +37,12 @@ const Home = () => {
 
   return (
     <div className="min-h-screen backgroundBlue flex">
-      <div className="w-1/5 bg-red-400">
+      <div className="w-1/5 h-screen top-[11.7%] sticky">
         <Sidecard />
       </div>
 
       <div className="w-3/5 flex flex-col items-center">
-        <div className="mainBodyBackground rounded-2xl w-[95%] my-[3%] flex flex-col overflow-y-auto px-[3%]">
+        <div className="navbarColor rounded-2xl w-[95%] my-[3%] flex flex-col overflow-y-auto px-[3%]">
           <InfiniteScroll dataLength={displayedPosts.length} next={fetchMorePosts} hasMore={more} loader={<h4>Loading...</h4>} endMessage={<p className="text-center text-white mb-3"><b>No More Posts!</b></p>}>
             {displayedPosts.map((post, index) => (
               <div className="w-full flex justify-center min-h-[50vh]" key={index}>
@@ -52,7 +53,8 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="w-1/5 bg-yellow-400">
+      <div className="w-1/5 h-screen top-[11.7%] sticky backgroundBlue bg-yellow-400">
+            <RightSideCard />
       </div>
 
     </div>
