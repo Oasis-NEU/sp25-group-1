@@ -1,6 +1,10 @@
 const Sidecard = () => {
   return (
-    <div>Sidecard</div>
+    <div className="bg-white w-full h-full">
+      <div className="postTitleColor rounded-md">
+        <div></div>
+      </div>
+    </div>
   )
 }
 

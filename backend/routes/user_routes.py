@@ -5,6 +5,9 @@ from models import *
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token, jwt_required
 from flask import Blueprint
+import random
+import string
+
 
 # Set up user blueprint at "/api/user"
 user_bp = Blueprint('user', __name__, url_prefix="/api/user")
@@ -43,6 +46,19 @@ def get_all_posts():
         return jsonify({"error": str(e), "status":500})
 
 
+# Generates a random seed of length 15 for DiceBear profiles
+def random_seed():
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=15))
+
+# Generates the actual image using the DiceBear API and random_seed function
+def random_profile():
+    try:
+        seed = random_seed()
+        return f'https://api.dicebear.com/9.x/shapes/png?seed={seed}&format=png'
+    except Exception as e:
+        print(f"Error: {e}")
+        return "https://upload.wikimedia.org/wikipedia/commons/d/d2/Solid_white.png"
+
 """
 POST: /api/user/create
 
@@ -80,7 +96,7 @@ def create_user():
             first_name = data.get('first_name'),
             last_name = data.get('last_name'),
             settings = data.get('settings'),
-            profile_picture = data.get('profile_picture'),
+            profile_picture = random_profile(),
             favorites = [],
             posts = [],
             role = data.get('role'),

@@ -63,7 +63,7 @@ const SignIn = () => {
           navigate("/");
         }
       },[token])
-    */
+  */
 
   return (
     <div className="h-screen backgroundBlue flex items-center justify-center">
@@ -124,23 +124,23 @@ const SignIn = () => {
             </div>
             {/* Names Input */}
             <div className="flex flex-row w-[80%] h-[8%] mt-[5%] gap-x-3">
-                <input
+              <input
                 type="name"
                 placeholder="First Name"
                 onChange={(e) => setFirstName(e.target.value)}
                 value={first_name}
                 required
                 className="bg-white rounded-lg px-[2%] w-full h-full outline-none"
-                ></input>
-                    
-                <input
+              ></input>
+
+              <input
                 type="name"
                 placeholder="Last Name"
                 onChange={(e) => setLastName(e.target.value)}
                 value={last_name}
                 required
                 className="bg-white rounded-lg px-[2%] w-full h-full outline-none"
-                ></input>
+              ></input>
             </div>
 
             {/* Email Input */}
@@ -170,18 +170,30 @@ const SignIn = () => {
 
             {/* Role Input */}
             <div className="flex flex-row w-[80%] mt-[2%] items-center text-white">
-                <p className="font-bold pr-5 underline underline-offset-8">Select Role</p>
-                <div className="flex flex-row gap-x-2">
-                    {/* programmer option */}
-                    <div className={`px-3 py-1 rounded-lg cursor-pointer ${role === "programmer" ? "bg-blue-500" : "bg-gray-500"}`} onClick={() => setRole("programmer")}>
-                        Developer
-                    </div>
-
-                    {/* designer option */}
-                    <div className={`px-3 py-1 rounded-lg cursor-pointer ${role === "designer" ? "bg-blue-500" : "bg-gray-500"}`} onClick={() => setRole("designer")}>
-                        Designer
-                    </div>
+              <p className="font-bold pr-5 underline underline-offset-8">
+                Select Role
+              </p>
+              <div className="flex flex-row gap-x-2">
+                {/* programmer option */}
+                <div
+                  className={`px-3 py-1 rounded-lg cursor-pointer ${
+                    role === "programmer" ? "bg-blue-500" : "bg-gray-500"
+                  }`}
+                  onClick={() => setRole("programmer")}
+                >
+                  Developer
                 </div>
+
+                {/* designer option */}
+                <div
+                  className={`px-3 py-1 rounded-lg cursor-pointer ${
+                    role === "designer" ? "bg-blue-500" : "bg-gray-500"
+                  }`}
+                  onClick={() => setRole("designer")}
+                >
+                  Designer
+                </div>
+              </div>
             </div>
 
             <div className="flex flex-row justify-between w-[80%] mt-[2%]">
