@@ -10,6 +10,7 @@ const ContextProvider = (props) => {
 
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const [posts, setPosts] = useState([]);
+    const [token, setToken] = useState('');
 
     const getPosts = async () => {
         try {
@@ -25,7 +26,13 @@ const ContextProvider = (props) => {
         getPosts();
     }, []);
 
-    const value = {posts, backendUrl};
+    useEffect(() => {
+        if (!token && localStorage.getItem("token")) {
+            setToken(localStorage.getItem("token"));
+        }
+    }, [])
+
+    const value = {posts, backendUrl, token, setToken};
 
     return(<Context.Provider value = {value}>
         {props.children}

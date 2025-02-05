@@ -38,9 +38,9 @@ def get_all_posts():
         collection = db.users
         # Finds with no filers and id removed
         documents = list(collection.find({}, {"_id": 0}))
-        return jsonify({"documents":documents, "success":True}), 200
+        return jsonify({"documents":documents, "success":True, "status":200})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": str(e), "status":500})
 
 
 """
@@ -63,12 +63,12 @@ Returns a JWT of the user's ID
 def create_user():
     # Check to see if content-type is json
     if request.headers['Content-Type'] != 'application/json':
-        return jsonify({"error": "Content-Type must be application/json", "success":False}), 400
+        return jsonify({"error": "Content-Type must be application/json", "success":False, "status":400})
     
     #Sets data from request
     data = request.json
     if not data:
-        return jsonify({"error": "Invalid JSON", "success":False}), 400
+        return jsonify({"error": "Invalid JSON", "success":False, "status":400})
     try:
         # Generates encrypted password using bcrypt
         hashed_password = bcrypt.generate_password_hash(data.get('password')).decode('utf-8')
@@ -91,9 +91,9 @@ def create_user():
 
         #Create JWT token and return it
         token = create_access_token(identity=str(user.id))
-        return jsonify({"message":"User Creation Successful", "success":True, "token":token}), 200
+        return jsonify({"message":"User Creation Successful", "success":True, "token":token, "status":200})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": str(e), "status":500})
 
 """
 POST: /api/user/login
@@ -111,7 +111,7 @@ def login():
     # Sets data from request
     data = request.json
     if not data:
-        return jsonify({"error": "Invalid JSON", "success":False}), 400
+        return jsonify({"error": "Invalid JSON", "success":False, "status":400})
     try:
         # Fetches email and password, fetches user from email
         email = data.get('email')
@@ -121,8 +121,8 @@ def login():
         # Compare given and hashed password from database, if match, login
         if user and bcrypt.check_password_hash(user.password, password):
             token = create_access_token(identity=str(user.id))
-            return jsonify({"message":"Login Successful", "success":True, "token":token}), 200
+            return jsonify({"message":"Login Successful", "success":True, "token":token, "status":200})
         else:
-            return jsonify({"error": "Invalid Email or Password", "success":False}), 401
+            return jsonify({"error": "Invalid Email or Password", "success":False, "status":401})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": str(e), "status":500})
