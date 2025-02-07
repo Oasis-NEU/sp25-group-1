@@ -12,6 +12,7 @@ const SignIn = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [user_name, setUsername] = useState("");
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
   const [role, setRole] = useState("");
@@ -38,6 +39,7 @@ const SignIn = () => {
         const response = await axios.post(`${backendUrl}/api/user/create`, {
           first_name,
           last_name,
+          user_name,
           email,
           password,
           role,
@@ -127,11 +129,11 @@ const SignIn = () => {
             onSubmit={onSubmitHandler}
             className="w-[90%] h-[90%] bg-[#131E34] rounded-lg flex flex-col items-center"
           >
-            <div className="postTitleColor rounded-lg flex w-[50%] h-[10%] mt-[5%] justify-center items-center">
+            <div className="postTitleColor rounded-lg flex w-[50%] h-[10%] mt-[3%] justify-center items-center">
               <p className="text-white text-xl">Create Account</p>
             </div>
             {/* Names Input */}
-            <div className="flex flex-row w-[80%] h-[8%] mt-[5%] gap-x-3">
+            <div className="flex flex-row w-[80%] h-[8%] mt-[3%] gap-x-3">
               <input
                 type="name"
                 placeholder="First Name"
@@ -150,6 +152,16 @@ const SignIn = () => {
                 className="bg-white rounded-lg px-[2%] w-full h-full outline-none"
               ></input>
             </div>
+
+            {/* Username Input */}
+            <input
+              type="name"
+              placeholder="Username"
+              onChange={(e) => setUsername(e.target.value)}
+              value={user_name}
+              required
+              className="bg-white rounded-lg px-[2%] w-[80%] h-[8%] mt-[2%] outline-none"
+            ></input>
 
             {/* Email Input */}
             <input
@@ -204,7 +216,7 @@ const SignIn = () => {
               </div>
             </div>
 
-            <div className="flex flex-row justify-between w-[80%] mt-[6%]">
+            <div className="flex flex-row justify-between w-[80%] mt-[4%]">
               <Link
                 to="/forgot-password"
                 className="postTitleColor rounded-lg px-2 py-1 text-white text-sm cursor-pointer"
