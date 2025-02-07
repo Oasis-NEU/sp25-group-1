@@ -180,8 +180,8 @@ def get_profile_information():
         except InvalidId:
             return jsonify({"error": "Invalid ObjectId format", "success":False, "status": 400})
 
-        collection = db.users
-        profile = collection.find_one({"_id": objID})
+        profile = db.users.find_one({"_id": objID})
+
         if profile:
             # Remove certain fields from the profile
             exclude = ["_id", "password", "updated_at", "favorites", "settings"]

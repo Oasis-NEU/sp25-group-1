@@ -32,5 +32,19 @@ app.register_blueprint(user_bp)
 def home():
     return {"message": "Backend is working"}, 200
 
+@app.route('/api/all', methods=["GET"])
+def get_all_routes():
+    routes = []
+    try:
+        for route in app.url_map.iter_rules():
+            routes.append({
+                'Endpoint': route.endpoint,
+                'Accepts': ', '.join(route.methods),
+                'Route': str(route)
+            })
+        return (routes)
+    except Exception as e:
+        return ({"error": str(e), "status":500})
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=9999)
