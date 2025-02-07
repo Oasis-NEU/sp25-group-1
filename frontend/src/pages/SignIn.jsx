@@ -106,12 +106,20 @@ const SignIn = () => {
               >
                 Forgot Password?
               </Link>
-              <p
-                onClick={() => setCurrentState("Create")}
+              <button
+                type="submit"
+                onClick={() => onSubmitHandler}
                 className="postTitleColor rounded-lg px-2 py-1 text-white text-sm cursor-pointer"
               >
-                Create Account
-              </p>
+                Continue
+              </button>
+            </div>
+            <div className="p-1.5 bg-blue-500 rounded-lg mt-[8%] cursor-pointer">
+                <p
+                className="text-white text-sm"
+                onClick={() => setCurrentState("Create")}>
+                  New? Create your account
+                </p>
             </div>
           </form>
         ) : (
@@ -119,7 +127,7 @@ const SignIn = () => {
             onSubmit={onSubmitHandler}
             className="w-[90%] h-[90%] bg-[#131E34] rounded-lg flex flex-col items-center"
           >
-            <div className="postTitleColor rounded-lg flex w-[50%] h-[10%] mt-[10%] justify-center items-center">
+            <div className="postTitleColor rounded-lg flex w-[50%] h-[10%] mt-[5%] justify-center items-center">
               <p className="text-white text-xl">Create Account</p>
             </div>
             {/* Names Input */}
@@ -196,19 +204,29 @@ const SignIn = () => {
               </div>
             </div>
 
-            <div className="flex flex-row justify-between w-[80%] mt-[2%]">
+            <div className="flex flex-row justify-between w-[80%] mt-[6%]">
               <Link
                 to="/forgot-password"
                 className="postTitleColor rounded-lg px-2 py-1 text-white text-sm cursor-pointer"
               >
                 Forgot Password?
               </Link>
-              <p
-                onClick={() => setCurrentState("SignIn")}
+
+              <div className="px-2 py-1 bg-blue-500 rounded-lg cursor-pointer">
+                <p
+                className="text-white text-sm"
+                onClick={() => setCurrentState("SignIn")}>
+                  Already have an account? Sign in
+                </p>
+              </div>
+
+              <button
+                type="submit"
+                onClick={() => onSubmitHandler}
                 className="postTitleColor rounded-lg px-2 py-1 text-white text-sm cursor-pointer"
               >
-                Login
-              </p>
+                Continue
+              </button>
             </div>
           </form>
         )}
