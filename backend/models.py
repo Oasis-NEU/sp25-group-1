@@ -37,6 +37,7 @@ class Post(me.Document):
 class User(me.Document):
     email = me.EmailField(unique=True, required=True)
     password = me.StringField(required=True)
+    user_name = me.StringField(reqired=True)
     first_name = me.StringField(required=True)
     last_name = me.StringField(required=True)
     settings = me.DictField(default={})
@@ -53,6 +54,7 @@ class User(me.Document):
         return {
             "id": str(self.id),
             "email": self.email,
+            "user_name": self.user_name,
             "first_name": self.first_name,
             "last_name": self.last_name,
             "role": self.role,

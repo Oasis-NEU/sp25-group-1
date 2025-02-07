@@ -7,6 +7,7 @@ from flask_jwt_extended import create_access_token, jwt_required
 from flask import Blueprint
 import random
 import string
+from bson.objectid import ObjectId, InvalidId
 
 
 # Set up user blueprint at "/api/user"
@@ -65,6 +66,7 @@ POST: /api/user/create
 {
     "email": ""
     "password": ""
+    "user_name": ""
     "first_name": ""
     "last_name": ""
     "settings": {}
@@ -85,7 +87,14 @@ def create_user():
     data = request.json
     if not data:
         return jsonify({"error": "Invalid JSON", "success":False, "status":400})
+    
     try:
+        # Test to see if user already exists
+        collection = db.users
+        existing_user = collection.find_one({"email": data.get("email")})
+        if existing_user:
+            return jsonify({"error": "Email already exists", "success":False, "status": 409})
+
         # Generates encrypted password using bcrypt
         hashed_password = bcrypt.generate_password_hash(data.get('password')).decode('utf-8')
 
@@ -93,6 +102,7 @@ def create_user():
         user = User(
             email = data.get('email'),
             password = hashed_password,
+            user_name = data.get('user_name'),
             first_name = data.get('first_name'),
             last_name = data.get('last_name'),
             settings = data.get('settings'),
@@ -140,5 +150,46 @@ def login():
             return jsonify({"message":"Login Successful", "success":True, "token":token, "status":200})
         else:
             return jsonify({"error": "Invalid Email or Password", "success":False, "status":401})
+    except Exception as e:
+        return jsonify({"error": str(e), "status":500})
+
+"""
+POST: /api/user/getProfileInformation
+{
+    "profileId": ""
+}
+
+Fetches the specific user information
+Returns success, message, and data
+"""
+@user_bp.route('/getProfileInformation', methods=["POST"])
+def get_profile_information():
+    # Check to see if content-type is json
+    if request.headers['Content-Type'] != 'application/json':
+        return jsonify({"error": "Content-Type must be application/json", "success":False, "status":400})
+
+    #Sets data from request
+    data = request.json
+    if not data:
+        return jsonify({"error": "Invalid JSON", "success":False, "status": 400})
+
+    try:
+        # Try to convert the string profileId to an ObjectId type
+        try:
+            objID = ObjectId(data.get("profileId"))
+        except InvalidId:
+            return jsonify({"error": "Invalid ObjectId format", "success":False, "status": 400})
+
+        collection = db.users
+        profile = collection.find_one({"_id": objID})
+        if profile:
+            # Remove certain fields from the profile
+            exclude = ["_id", "password", "updated_at", "favorites", "settings"]
+            for field in exclude:
+                profile.pop(field, None)
+
+            return jsonify({"message":"Fetched profile successfully", "success":True, "profile":profile, "status":200})
+        else:
+            return jsonify({"message":"Error Fetching Profile/Does Not Exist", "success":False, "status":400})
     except Exception as e:
         return jsonify({"error": str(e), "status":500})

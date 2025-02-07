@@ -36,7 +36,7 @@ def get_all_posts():
         return jsonify({"error": str(e), "status":500})
 
 """
-POST: /api/createPostDesigner
+POST: /api/posts/createPostDesigner
 JWT Required - PROTECTED ROUTE
 {
     "title": ""
