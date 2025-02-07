@@ -1,6 +1,6 @@
 const Search = () => {
   return (
-    <div className="bg-white rounded-md p-2 flex items-center w-full max-w-md border border-gray-300">
+    <div className="bg-white rounded-md p-1 flex items-center w-full max-w-md border border-gray-300">
         <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
