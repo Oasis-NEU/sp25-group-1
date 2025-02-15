@@ -13,13 +13,13 @@ post_bp = Blueprint('posts', __name__, url_prefix="/api/posts")
 # Image Restrictions
 MAX_SIZE = 5 * 1024 * 1024
 MAX_IMAGES = 5
+MAX_FILES = 5
 
 # https://docs.google.com/document/d/1QpBL0hMsuVgaeLUXRE9LmVfPSM9XT-BebozhfoxMap4/edit?tab=t.0  UPDATE AND USE THIS FOR ENDPOINT COMPLETION
 
 """
 /api/posts/getAllPosts          DONE
-/api/posts/createPostDesigner   DONE
-/api/posts/createPostCoder      tbd
+/api/posts/createPost           DONE
 /api/posts/trending
 /api/posts/likePost
 /api/posts/deletePost
@@ -41,26 +41,31 @@ def get_all_posts():
         documents = list(collection.find({}))
         for doc in documents:
             doc["_id"] = str(doc["_id"])
+            if "author" in doc:
+                doc["author"] = str(doc["author"])
+
         return jsonify({"documents":documents, "success":True, "status":200})
     except Exception as e:
         return jsonify({"error": str(e), "status":500})
 
 """
-POST: /api/posts/createPostDesigner
+POST: /api/posts/createPost
 JWT Required - PROTECTED ROUTE
 {
     "title": ""
     "content": ""
     "images": ["", ""] # Optional
+    "files": ["", ""] # Optional
     "looking_for": ""
+    "post_type": ["designer", "programmer"]
 }
 
 Creates a new post in the database
 Returns success message and post ID
 """
-@post_bp.route('/createPostDesigner', methods=["POST", "GET"])
+@post_bp.route('/createPost', methods=["POST", "GET"])
 @jwt_required()
-def create_post_designer():
+def create_post():
     try:
         if not request.form:
             return jsonify({"error": "Missing form data", "success": False, "status": 400})
@@ -83,12 +88,35 @@ def create_post_designer():
                     file.seek(0)
                     file_size = len(file.read())
                     file.seek(0)
-
                     if file_size > MAX_SIZE:
                         return jsonify({"error": f"File {file.filename} exceeds 5MB limit", "success": False, "status": 400})
 
                     upload_result = cloudinary.uploader.upload(file)
                     uploaded_images.append(upload_result['secure_url'])
+            
+        # Handle file uploads
+        uploaded_files = []
+        if 'files' in request.files:
+            files = request.files.getlist('files')
+
+            if len(files) > MAX_FILES:
+                return jsonify({"error": f"Maximum {MAX_FILES} images allowed per post", "success": False, "status": 400})
+
+            for file in files:
+                if file and file.filename:
+                    file.seek(0)
+                    file_size = len(file.read())
+                    file.seek(0)
+
+                    if file_size > MAX_SIZE:
+                        return jsonify({"error": f"File {file.filename} exceeds 5MB limit", "success": False, "status": 400})
+
+                    # Upload file to Cloudinary as a raw file
+                    upload_result = cloudinary.uploader.upload(file, resource_type="raw")
+                    uploaded_files.append({
+                        "filename": file.filename,
+                        "file_url": upload_result['secure_url']
+                    })
 
         # Create post
         post = Post(
@@ -96,16 +124,17 @@ def create_post_designer():
             content=request.form.get('content'),
             author=user,
             images=uploaded_images,
+            files=uploaded_files,
             looking_for=request.form.get('looking_for'),
             comments=[],
             likes=0,
             created_at=datetime.datetime.now(),
             updated_at=datetime.datetime.now(),
-            post_type="designer"
+            post_type=request.form.get("post_type")
         )
         post.save()
 
-        return jsonify({"message": "Designer Post Successful", "success": True, "postId": str(post.id), "status": 200})
+        return jsonify({"message": "Post Successful", "success": True, "postId": str(post.id), "status": 200})
 
     except Exception as e:
         return jsonify({"error": str(e), "success": False, "status": 500})

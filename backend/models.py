@@ -7,7 +7,7 @@ import datetime
 class User(me.Document):
     email = me.EmailField(unique=True, required=True)
     password = me.StringField(required=True)
-    user_name = me.StringField(unique=True, required=True)
+    user_name = me.StringField(unique=True, required=True, null=False)
     first_name = me.StringField(required=True)
     last_name = me.StringField(required=True)
     settings = me.DictField(default={})
@@ -46,6 +46,7 @@ class Post(me.Document):
     content = me.StringField(required=True)
     author = me.ReferenceField(User, required=True, reverse_delete_rule=me.CASCADE)
     images = me.ListField(me.StringField())
+    files = me.ListField(me.DictField())
     looking_for = me.StringField(required=True, choices=["programmer", "designer"])
     comments = me.ListField(me.StringField())
     likes = me.IntField()
@@ -58,8 +59,9 @@ class Post(me.Document):
             "id": str(self.id),
             "title": self.title,
             "content": self.content,
-            "author": self.author,
+            "author": str(self.author),
             "images": self.images,
+            "files":self.files,
             "looking_for": self.looking_for,
             "comments": self.comments,
             "likes": self.likes,
