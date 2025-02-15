@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 
-const PostCode = ({post}) => {
+const PostCode = ({post, author}) => {
   const [mode, setMode] = useState("description");
   const [files, setFiles] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -101,15 +101,19 @@ const PostCode = ({post}) => {
           <div className="flex-1 w-full flex flex-row">
             {/* Box for profile picture */}
             <div className="flex-1 flex items-center justify-center">
-              <div className="bg-black rounded-full aspect-square h-[90%]"></div>
+              <div className="bg-black rounded-full max-w-[75%] max-h-[75%] aspect-square overflow-hidden flex items-center justify-center">
+                <img className="w-full h-full object-cover rounded-full" src={author?.profile_picture || ""} alt="" />
+              </div>
             </div>
             {/* Box for Username/LookingFor Info*/}
             <div className=" flex-3 flex flex-col justify-center">
               <div className="postTitleColor w-full rounded-md flex items-center px-[2%] mb-[2%]">
-                <p className="text-white text-md">{post.author}</p>
+                <p className="text-white text-md">
+                  {author && author.user_name ? author.user_name : "Unknown User"}
+                </p>
               </div>
               <div className="postTitleColor w-full rounded-md flex items-center px-[2%] mt-[2%]">
-                <p className="text-white text-md">{post.looking_for}</p>
+                <p className="text-white text-md">Looking For: {post.looking_for}</p>
               </div>
             </div>
           </div>
@@ -189,7 +193,7 @@ const PostCode = ({post}) => {
         {/* Images Section */}
         <div className="flex flex-col w-[55%] items-start justify-start">
           {/* Sub container for images */}
-          <div className="w-full h-full flex flex-col pl-[6%] py-[2%]"> 
+          <div className="w-full h-full flex flex-col pl-[6%] py-[2%]">
             {/* Other images (If they exist) */}
             {extraImages.length > 0 && (
               <div className="flex-[2] w-full flex gap-[10%] items-start rounded-lg">
@@ -201,7 +205,7 @@ const PostCode = ({post}) => {
                     <img
                       src={image}
                       alt={`Extra ${index + 1}`}
-                      className="w-full h-full object-contain rounded-md"
+                      className="max-w-full max-h-full aspect-auto object-contain rounded-md"
                     />
                   </div>
                 ))}
@@ -209,11 +213,11 @@ const PostCode = ({post}) => {
             )}
 
             {/* Main Image */}
-            <div className="flex-[4] w-full h-full flex items-start justify-start">
+            <div className="flex-[4] w-full flex items-start justify-start">
               <img
                 src={post.images?.[0]}
                 alt="Post Main Image"
-                className="w-full h-auto max-h-full object-contain rounded-lg"
+                className="max-w-full max-h-full aspect-auto object-contain rounded-lg"
               />
             </div>
           </div>

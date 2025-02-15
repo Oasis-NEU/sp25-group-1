@@ -1,4 +1,4 @@
-const PostDesigner = ({ post }) => {
+const PostDesigner = ({ post, author }) => {
   const extraImages = post.images?.slice(1) || [];
 
   return (
@@ -42,13 +42,15 @@ const PostDesigner = ({ post }) => {
           <div className="flex-1 w-full flex flex-row">
             {/* Box for profile picture */}
             <div className="flex-1 flex items-center justify-center">
-              <div className="bg-black rounded-full aspect-square h-[90%]"></div>
+              <div className="bg-black rounded-full max-w-[75%] max-h-[75%] aspect-square overflow-hidden flex items-center justify-center">
+                <img className="w-full h-full object-cover rounded-full" src={author?.profile_picture || ""} alt="" />
+              </div>
             </div>
             {/* Box for Username/LookingFor Info*/}
             <div className=" flex-3 flex flex-col justify-center">
               <div className="postTitleColor w-full rounded-md flex items-center px-[2%] mb-[2%]">
                 <p className="text-white text-md">
-                  {post.author || "Unknown User"}
+                  {author && author.user_name ? author.user_name : "Unknown User"}
                 </p>
               </div>
               <div className="postTitleColor w-full rounded-md flex items-center px-[2%] mt-[2%]">
