@@ -22,6 +22,7 @@ MAX_FILES = 5
 /api/posts/createPost           DONE
 /api/posts/trending
 /api/posts/likePost
+/api/posts/unlikePost 
 /api/posts/deletePost
 /api/posts/updatePost
 /api/posts/getComments
@@ -158,5 +159,26 @@ def like_post():
 
         post.save()
         return jsonify({"message":"Post Liked", "success":True, "status":200})
+    except Exception as e:
+        return jsonify({"error": str(e), "status":500})
+    
+
+@post_bp.route('/unlikePost', methods=["POST"])
+def unlike_post():
+    data = request.json
+    if not data:
+        return jsonify({"error": "Invalid JSON", "success":False, "status":400})
+
+    try:
+        postId = data.get("post_id")
+        post = Post.objects(id=postId).first()
+        if not post:
+            return jsonify({"error": "Post not found", "success":False, "status":404})
+        
+        post.likes -= 1
+        
+        post.save()
+        return jsonify({"message":"Post Unliked", "success":True, "status":200})
+    
     except Exception as e:
         return jsonify({"error": str(e), "status":500})
