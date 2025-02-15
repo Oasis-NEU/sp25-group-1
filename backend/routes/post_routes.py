@@ -8,9 +8,12 @@ from flask import Blueprint
 # Set up post blueprint at "/api/posts"
 post_bp = Blueprint('posts', __name__, url_prefix="/api/posts")
 
+# https://docs.google.com/document/d/1QpBL0hMsuVgaeLUXRE9LmVfPSM9XT-BebozhfoxMap4/edit?tab=t.0  UPDATE AND USE THIS FOR ENDPOINT COMPLETION
+
 """
-/api/posts/createPostDesigner
-/api/posts/createPostCoder
+/api/posts/getAllPosts          DONE
+/api/posts/createPostDesigner   DONE
+/api/posts/createPostCoder      tbd
 /api/posts/trending
 /api/posts/likePost
 /api/posts/deletePost
@@ -81,5 +84,26 @@ def create_post_designer():
             )
         post.save()
         return jsonify({"message":"Designer Post Successful", "success":True, "postId":str(post.id), "status":200})
+    except Exception as e:
+        return jsonify({"error": str(e), "status":500})
+
+
+@post_bp.route('/likePost', methods=["POST"])
+def like_post():
+    #Sets data from request
+    data = request.json
+    if not data:
+        return jsonify({"error": "Invalid JSON", "success":False, "status":400})
+
+    try:
+        postId = data.get("post_id")
+        post = Post.objects(id=postId).first()
+        if not post:
+            return jsonify({"error": "Post not found", "success":False, "status":404})
+        
+        post.likes += 1
+
+        post.save()
+        return jsonify({"message":"Post Liked", "success":True, "status":200})
     except Exception as e:
         return jsonify({"error": str(e), "status":500})
