@@ -6,8 +6,6 @@ import Home from './pages/Home';
 import Navbar from './components/Navbar';
 import SignIn from './pages/SignIn';
 import Post from './pages/Post';
-import PostCode from './pages/PostCode';
-import CodeFileViewer from './pages/CodeViewer';
 
 const App = () => {
     return (
@@ -17,8 +15,7 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/sign-in" element={<SignIn />} />
-                <Route path="/post" element={<Post />} />
-                <Route path="/postcode" element={<PostCode />} />
+                <Route path="/post/:postId" element={<Post />} />
             </Routes>
         </div>
     )

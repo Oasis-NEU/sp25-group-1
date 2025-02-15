@@ -41,7 +41,9 @@ def get_all_posts():
     try:
         collection = db.users
         # Finds with no filers and id removed
-        documents = list(collection.find({}, {"_id": 0}))
+        documents = list(collection.find({}))
+        for doc in documents:
+            doc["_id"] = str(doc["_id"])
         return jsonify({"documents":documents, "success":True, "status":200})
     except Exception as e:
         return jsonify({"error": str(e), "status":500})
@@ -94,6 +96,10 @@ def create_user():
         existing_user = collection.find_one({"email": data.get("email")})
         if existing_user:
             return jsonify({"error": "Email already exists", "success":False, "status": 409})
+
+        existing_user_name = collection.find_one({"user_name": data.get("user_name")})
+        if existing_user_name:
+            return jsonify({"error": "Username already exists", "success":False, "status": 409})
 
         # Generates encrypted password using bcrypt
         hashed_password = bcrypt.generate_password_hash(data.get('password')).decode('utf-8')

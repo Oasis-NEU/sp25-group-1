@@ -4,6 +4,7 @@ import PostMainPage from "../components/PostMainPage"
 import { useContext, useEffect, useState } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { Context } from "../context/context"
+import { useNavigate } from "react-router-dom"
 
 const Home = () => {
 
@@ -11,6 +12,7 @@ const Home = () => {
   const [displayedPosts, setDisplayedPosts] = useState([]);
   const [more, setMore] = useState(false);
   const [index, setIndex] = useState(10);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (posts.length > 0) {
@@ -45,8 +47,8 @@ const Home = () => {
         <div className="navbarColor rounded-2xl w-[95%] my-[3%] flex flex-col overflow-y-auto px-[3%]">
           <InfiniteScroll dataLength={displayedPosts.length} next={fetchMorePosts} hasMore={more} loader={<h4>Loading...</h4>} endMessage={<p className="text-center text-white mb-3"><b>No More Posts!</b></p>}>
             {displayedPosts.map((post, index) => (
-              <div className="w-full flex justify-center min-h-[50vh]" key={index}>
-                <PostMainPage title={post.title}/>
+              <div className="w-full flex justify-center min-h-[50vh] cursor-pointer" key={index} onClick={() => navigate(`/post/${post._id}`)}>
+                <PostMainPage title={post.title} image={post.images?.[0]}/>
               </div>
             ))}
           </InfiniteScroll>
