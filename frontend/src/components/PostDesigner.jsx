@@ -1,5 +1,16 @@
+import { useState } from "react";
+
 const PostDesigner = ({ post, author }) => {
-  const extraImages = post.images?.slice(1) || [];
+  const [extraImages, setExtraImages] = useState(post.images?.slice(1) || []);
+  const [currentImage, setCurrentImage] = useState(post.images?.[0] || "");
+
+  // Function to handle clicking side images
+  const handleImageClick = (image, index) => {
+    const newExtraImages = [...extraImages];
+    newExtraImages[index] = currentImage; 
+    setCurrentImage(image);
+    setExtraImages(newExtraImages);
+  };
 
   return (
     <div className="backgroundBlue flex items-center justify-center h-screen">
@@ -9,17 +20,22 @@ const PostDesigner = ({ post, author }) => {
         <div className="flex flex-col w-[65%] items-center">
           {/* Sub container for images */}
           <div className="w-full h-full flex flex-col py-[5%] pr-[6%]">
-            {/* Image 1 */}
-            <div className="flex-[4] w-full rounded-lg">
-              <img src={post.images?.[0]} alt="" />
+            {/* Image Main */}
+            <div className="flex-[4] w-full rounded-lg flex justify-center items-center">
+              <img 
+                src={currentImage} 
+                alt="" 
+                className="max-w-[90%] max-h-[90%] w-auto h-auto object-contain rounded-lg" 
+              />
             </div>
             {/* Other images */}
             {extraImages.length > 0 && (
               <div className="flex-[2] w-full flex justify-between items-center rounded-lg">
-                {post.images?.slice(1).map((image, index) => (
+                {extraImages.map((image, index) => (
                   <div
                     key={index}
                     className="bg-white w-[20%] h-[40%] rounded-md flex items-center justify-center overflow-hidden"
+                    onClick={() => handleImageClick(image, index)}
                   >
                     <img
                       src={image}

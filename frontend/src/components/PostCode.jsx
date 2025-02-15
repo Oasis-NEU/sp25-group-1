@@ -6,6 +6,8 @@ const PostCode = ({post, author}) => {
   const [mode, setMode] = useState("description");
   const [files, setFiles] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentImage, setCurrentImage] = useState(post.images?.[0] || "");
+  const [extraImages, setExtraImages] = useState(post.images?.slice(1) || []);
 
   useEffect(() => {
     if (post.files && post.files.length > 0) {
@@ -78,14 +80,21 @@ const PostCode = ({post, author}) => {
     }
   };
 
+  
+  // Function to handle clicking side images
+  const handleImageClick = (image, index) => {
+    const newExtraImages = [...extraImages];
+    newExtraImages[index] = currentImage; 
+    setCurrentImage(image);
+    setExtraImages(newExtraImages);
+  };
+
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [files.length]);
-
-  const extraImages = post.images?.slice(1) || [];
   
   return (
     <div className="backgroundBlue flex items-center justify-center h-screen">
@@ -164,6 +173,16 @@ const PostCode = ({post, author}) => {
           {/* Buttons to show only when state is code*/}
           <div className={`p-0 flex flex-row items-center gap-[5%] w-full ${mode === "description" ? "hidden" : ""}`}>
             <button
+                className="px-3 py-0.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+                onClick={() =>
+                  setCurrentIndex((prev) =>
+                    prev === 0 ? files.length - 1 : prev - 1
+                  )
+                }
+              >
+                Previous
+            </button>
+            <button
               className="px-3 py-0.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
               onClick={() =>
                 setCurrentIndex((prev) =>
@@ -172,16 +191,6 @@ const PostCode = ({post, author}) => {
               }
             >
               Next
-            </button>
-            <button
-              className="px-3 py-0.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-              onClick={() =>
-                setCurrentIndex((prev) =>
-                  prev === 0 ? files.length - 1 : prev - 1
-                )
-              }
-            >
-              Previous
             </button>
             <div className="flex flex-row text-white">
               <p className="text-white pr-[10%]">Total Files: {files.length}</p>
@@ -201,6 +210,7 @@ const PostCode = ({post, author}) => {
                   <div
                     key={index}
                     className="bg-transparent w-[20%] h-[40%] rounded-md flex items-center justify-center overflow-hidden"
+                    onClick={() => handleImageClick(image, index)}
                   >
                     <img
                       src={image}
@@ -215,7 +225,7 @@ const PostCode = ({post, author}) => {
             {/* Main Image */}
             <div className="flex-[4] w-full flex items-start justify-start">
               <img
-                src={post.images?.[0]}
+                src={currentImage}
                 alt="Post Main Image"
                 className="max-w-full max-h-full aspect-auto object-contain rounded-lg"
               />
