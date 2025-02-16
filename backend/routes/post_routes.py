@@ -20,10 +20,10 @@ MAX_FILES = 5
 """
 /api/posts/getAllPosts          DONE
 /api/posts/createPost           DONE
-/api/posts/trending
-/api/posts/likePost
-/api/posts/unlikePost 
-/api/posts/deletePost
+/api/posts/trending    
+/api/posts/likePost             DONE
+/api/posts/unlikePost           DONE
+/api/posts/deletePost    
 /api/posts/updatePost
 /api/posts/getComments
 /api/posts/makeComment
@@ -57,7 +57,7 @@ JWT Required - PROTECTED ROUTE
     "content": ""
     "images": ["", ""] # Optional
     "files": ["", ""] # Optional
-    "looking_for": ""
+    "looking_for": ["designer", "programmer"]
     "post_type": ["designer", "programmer"]
 }
 
@@ -142,6 +142,15 @@ def create_post():
         return jsonify({"error": str(e), "status":500})
 
 
+"""
+POST: /api/posts/likePost
+{
+    "post_id":""
+}
+
+Increases like count for a particular post
+Returns success message
+"""
 @post_bp.route('/likePost', methods=["POST"])
 def like_post():
     #Sets data from request
@@ -161,8 +170,17 @@ def like_post():
         return jsonify({"message":"Post Liked", "success":True, "status":200})
     except Exception as e:
         return jsonify({"error": str(e), "status":500})
-    
 
+
+"""
+POST: /api/posts/unlikePost
+{
+    "post_id":""
+}
+
+Decreases like count for a particular post
+Returns success message
+"""
 @post_bp.route('/unlikePost', methods=["POST"])
 def unlike_post():
     data = request.json
@@ -182,3 +200,37 @@ def unlike_post():
     
     except Exception as e:
         return jsonify({"error": str(e), "status":500})
+    
+"""
+POST: /api/posts/deletePost
+{
+    "post_id":""
+}
+
+Deletes the post from database
+Returns success message
+"""
+@post_bp.route('/deletePost', methods=["POST"])
+@jwt_required()
+def delete_post():
+    try:
+        user_id = get_jwt_identity()
+
+        data = request.json
+        if not data:
+            return jsonify({"error": "Invalid JSON", "success":False, "status":400})
+
+        post_id = data["post_id"]
+        post = Post.objects(id=post_id).first()
+        if not post:
+            return jsonify({"error": "Post not found", "success": False, "status": 404})
+        
+        if str(post.author.id) != str(user_id):
+            return jsonify({"error": "Unauthorized: You can only delete your own posts", "success": False, "status": 403})
+        
+        post.delete()
+
+        return jsonify({"message": "Post deleted successfully", "success": True, "status": 200})
+    
+    except Exception as e:
+        return jsonify({"error": str(e), "success": False, "status": 500})
