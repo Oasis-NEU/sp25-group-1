@@ -7,6 +7,7 @@ import Navbar from './components/Navbar';
 import SignIn from './pages/SignIn';
 import Post from './pages/Post';
 import CreatePost from './pages/CreatePost';
+import Profile from './pages/Profile';
 
 const App = () => {
     return (
@@ -18,6 +19,7 @@ const App = () => {
                 <Route path="/sign-in" element={<SignIn />} />
                 <Route path="/post/:postId" element={<Post />} />
                 <Route path="/create-post" element={<CreatePost />} />
+                <Route path="/profile" element={<Profile />} />
             </Routes>
         </div>
     )
