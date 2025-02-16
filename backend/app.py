@@ -7,7 +7,8 @@ from flask_jwt_extended import JWTManager
 
 #Set up Flask, CORS and Bcrypt
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}},
+     allow_headers=["Authorization", "Content-Type"])
 bcrypt = Bcrypt(app)
 
 #Set JWT configuration

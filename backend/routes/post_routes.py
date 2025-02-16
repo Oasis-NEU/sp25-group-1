@@ -1,8 +1,8 @@
 # Imports
 from flask import request, jsonify
-from config import db
+from config import db, JWT_SECRET_KEY
 from models import *
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, decode_token
 from flask import Blueprint
 import cloudinary
 import cloudinary.uploader
@@ -51,7 +51,6 @@ def get_all_posts():
 
 """
 POST: /api/posts/createPost
-JWT Required - PROTECTED ROUTE
 {
     "title": ""
     "content": ""
@@ -64,14 +63,17 @@ JWT Required - PROTECTED ROUTE
 Creates a new post in the database
 Returns success message and post ID
 """
-@post_bp.route('/createPost', methods=["POST", "GET"])
-@jwt_required()
+@post_bp.route('/createPost', methods=["POST", "OPTIONS"])
 def create_post():
     try:
         if not request.form:
             return jsonify({"error": "Missing form data", "success": False, "status": 400})
 
-        user_id = get_jwt_identity()
+        token = request.form.get("token") or request.json.get("token")
+        if not token:
+            return jsonify({"error": "Token is missing", "success": False, "status": 401}), 401
+
+        user_id = decode_token(request.form.get("token")).get('sub')
         user = User.objects(id=user_id).first()
         if not user:
             return jsonify({"error": "User not found", "success": False, "status": 404})
@@ -138,8 +140,8 @@ def create_post():
         return jsonify({"message": "Post Successful", "success": True, "postId": str(post.id), "status": 200})
 
     except Exception as e:
+        print(e)
         return jsonify({"error": str(e), "success": False, "status": 500})
-        return jsonify({"error": str(e), "status":500})
 
 
 """

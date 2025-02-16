@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Navbar from './components/Navbar';
 import SignIn from './pages/SignIn';
 import Post from './pages/Post';
+import CreatePost from './pages/CreatePost';
 
 const App = () => {
     return (
@@ -16,6 +17,7 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/sign-in" element={<SignIn />} />
                 <Route path="/post/:postId" element={<Post />} />
+                <Route path="/create-post" element={<CreatePost />} />
             </Routes>
         </div>
     )
