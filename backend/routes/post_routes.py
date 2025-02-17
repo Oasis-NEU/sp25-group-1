@@ -6,6 +6,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, decode_token
 from flask import Blueprint
 import cloudinary
 import cloudinary.uploader
+from bson.objectid import ObjectId, InvalidId
 
 # Set up post blueprint at "/api/posts"
 post_bp = Blueprint('posts', __name__, url_prefix="/api/posts")
@@ -20,13 +21,13 @@ MAX_FILES = 5
 """
 /api/posts/getAllPosts          DONE
 /api/posts/createPost           DONE
-/api/posts/trending    
+/api/posts/trending             
 /api/posts/likePost             DONE
 /api/posts/unlikePost           DONE
-/api/posts/deletePost    
-/api/posts/updatePost
-/api/posts/getComments
-/api/posts/makeComment
+/api/posts/deletePost           DONE
+/api/posts/updatePost           
+/api/posts/getComments          tbd
+/api/posts/makeComment          tbd
 /api/posts/getPostsByUser
 /api/posts/reportPost
 """
@@ -236,3 +237,37 @@ def delete_post():
     
     except Exception as e:
         return jsonify({"error": str(e), "success": False, "status": 500})
+
+
+"""
+POST: /api/posts/getPostsByUser
+Takes in string user id and finds all posts by that user id
+"""
+@post_bp.route('/getPostsByUser', methods=["POST"])
+def get_posts_by_user():
+    # Check to see if content-type is json
+    if request.headers['Content-Type'] != 'application/json':
+        return jsonify({"error": "Content-Type must be application/json", "success":False, "status":400})
+    
+    #Sets data from request
+    data = request.json
+    if not data:
+        return jsonify({"error": "Invalid JSON", "success":False, "status":400})
+
+    try:
+        try:
+            obj_id = ObjectId(data.get("userId"))
+        except InvalidId:
+            return jsonify({"error": "Invalid user ID not found", "success":False, "status":404})
+        
+        collection = db.posts
+        documents = list(collection.find({"author":obj_id}))
+        
+        for doc in documents:
+            doc["_id"] = str(doc["_id"])
+            if "author" in doc:
+                doc["author"] = str(doc["author"])
+                
+        return jsonify({"documents":documents, "success":True, "status":200})
+    except Exception as e:
+        return jsonify({"error": str(e), "status":500})
