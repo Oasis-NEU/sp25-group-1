@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
+import CommentSection from "./CommentSection";
 
-const PostCode = ({post, author}) => {
+const PostCode = ({ post, author }) => {
   const [mode, setMode] = useState("description");
   const [files, setFiles] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -80,11 +81,11 @@ const PostCode = ({post, author}) => {
     }
   };
 
-  
+
   // Function to handle clicking side images
   const handleImageClick = (image, index) => {
     const newExtraImages = [...extraImages];
-    newExtraImages[index] = currentImage; 
+    newExtraImages[index] = currentImage;
     setCurrentImage(image);
     setExtraImages(newExtraImages);
   };
@@ -95,7 +96,7 @@ const PostCode = ({post, author}) => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [files.length]);
-  
+
   return (
     <div className="backgroundBlue flex items-center justify-center h-screen">
       {/* Main Box for Post */}
@@ -127,60 +128,63 @@ const PostCode = ({post, author}) => {
             </div>
           </div>
 
-          {/* Code and Description Switch */}
-          <div className="w-full flex justify-start">
-            {mode === "description" ? (
-              <div
-                onClick={() => setMode("code")}
-                className="bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer"
-              >
-                <p className="text-blue-500 text-sm">Switch to Code</p>
-              </div>
-            ) : (
-              <div
-                onClick={() => setMode("description")}
-                className="bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer"
-              >
-                <p className="text-blue-500 text-sm">Switch to Description</p>
-              </div>
-            )}
+          {/* Mode Switch Buttons */}
+          <div className="w-full flex justify-start gap-2">
+            <div
+              onClick={() => setMode("description")}
+              className={`bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer ${mode === "description" ? "bg-gray-300" : ""
+                }`}
+            >
+              <p className="text-blue-500 text-sm">Description</p>
+            </div>
+            <div
+              onClick={() => setMode("code")}
+              className={`bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer ${mode === "code" ? "bg-gray-300" : ""
+                }`}
+            >
+              <p className="text-blue-500 text-sm">Code</p>
+            </div>
+            <div
+              onClick={() => setMode("comments")}
+              className={`bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer ${mode === "comments" ? "bg-gray-300" : ""
+                }`}
+            >
+              <p className="text-blue-500 text-sm">Comments</p>
+            </div>
           </div>
 
-          {/* Description Box */}
-          {mode === "description" ? (
+          {/* Conditional Display for Different Modes */}
+          {mode === "description" && (
             <div className="postTitleColor flex-10 w-full rounded-md flex p-[3%] overflow-y-scroll">
               <p className="text-white text-xl">Description</p>
             </div>
-          ) : (
-            <div className="bg-transparent flex-10 w-full rounded-md flex flex-col overflow-y-scroll">            
+          )}
+          {mode === "code" && (
+            <div className="bg-transparent flex-10 w-full rounded-md flex flex-col overflow-y-scroll">
               {files.length > 0 ? (
-                <div>
-                  <div>
-                    <SyntaxHighlighter
-                      language={files[currentIndex]?.language}
-                      style={dracula}
-                      className="w-full h-full p-4 text-xs"
-                    >
-                      {files[currentIndex]?.content || "Loading..."}
-                    </SyntaxHighlighter>
-                  </div>
-                </div>
+                <SyntaxHighlighter language={files[currentIndex]?.language} style={dracula} className="w-full h-full p-4 text-xs">
+                  {files[currentIndex]?.content || "Loading..."}
+                </SyntaxHighlighter>
               ) : (
                 <p>No files uploaded yet.</p>
               )}
             </div>
           )}
+          {mode === "comments" && (
+            <CommentSection/>
+          )}
+
           {/* Buttons to show only when state is code*/}
-          <div className={`p-0 flex flex-row items-center gap-[5%] w-full ${mode === "description" ? "hidden" : ""}`}>
+          <div className={`p-0 flex flex-row items-center gap-[5%] w-full ${mode !== "code" ? "hidden" : ""}`}>
             <button
-                className="px-3 py-0.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-                onClick={() =>
-                  setCurrentIndex((prev) =>
-                    prev === 0 ? files.length - 1 : prev - 1
-                  )
-                }
-              >
-                Previous
+              className="px-3 py-0.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+              onClick={() =>
+                setCurrentIndex((prev) =>
+                  prev === 0 ? files.length - 1 : prev - 1
+                )
+              }
+            >
+              Previous
             </button>
             <button
               className="px-3 py-0.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"

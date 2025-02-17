@@ -1,8 +1,10 @@
 import { useState } from "react";
+import CommentSection from "./CommentSection";
 
 const PostDesigner = ({ post, author }) => {
   const [extraImages, setExtraImages] = useState(post.images?.slice(1) || []);
   const [currentImage, setCurrentImage] = useState(post.images?.[0] || "");
+  const [mode, setMode] = useState("description");
 
   // Function to handle clicking side images
   const handleImageClick = (image, index) => {
@@ -76,10 +78,34 @@ const PostDesigner = ({ post, author }) => {
               </div>
             </div>
           </div>
-          {/* Description Box */}
-          <div className="postTitleColor flex-10 w-full rounded-md flex p-[3%] mb-[10%] overflow-y-scroll">
-            <p className="text-white text-xl">{post.content}</p>
+
+          <div className="w-full flex justify-end gap-2">
+            <div
+              onClick={() => setMode("description")}
+              className="bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer"
+            >
+              <p className="text-blue-500 text-sm">Description</p>
+            </div>
+
+            <div
+              onClick={() => setMode("comments")}
+              className="bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer"
+            >
+              <p className="text-blue-500 text-sm">Comments</p>
+            </div>
           </div>
+
+          {/* Conditional Display for Different Modes */}
+          {mode === "description" && (
+            <div className="postTitleColor flex-10 w-full rounded-md flex p-[3%] overflow-y-scroll">
+              <p className="text-white text-xl">Description</p>
+            </div>
+          )}
+
+          {mode === "comments" && (
+            <CommentSection/>
+          )}
+
         </div>
       </div>
     </div>
