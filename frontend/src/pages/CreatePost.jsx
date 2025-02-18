@@ -68,7 +68,7 @@ const CreatePost = () => {
                         onChange={(e) => setTitle(e.target.value)}
                         value={title}
                         required
-                        className="bg-white rounded-lg px-[2%] w-full h-[15%] outline-none"
+                        className="bg-white rounded-lg px-[2%] w-full h-[25%] outline-none"
                     />
 
                     <textarea

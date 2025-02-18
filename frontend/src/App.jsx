@@ -11,7 +11,7 @@ import Profile from './pages/Profile';
 
 const App = () => {
     return (
-        <div className="w-full min-h-screen">
+        <div className="w-full min-h-screen backgroundBlue">
             <ToastContainer />
             <Navbar />
             <Routes>

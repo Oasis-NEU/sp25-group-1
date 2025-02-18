@@ -40,7 +40,18 @@ button {
 }
 
 .backgroundBlue {
-  background-color: #0A1121;
+  background-image: 
+    linear-gradient(rgba(10, 17, 33, 0.97), rgba(10, 17, 33, 0.97)), 
+    url('./assets/pattern.jpg');
+  background-repeat: repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  perspective: 1px;
+  backface-visibility: hidden;
+}
+
+.backgroundNoPattern {
+  background-color: rgba(10, 17, 33);
 }
 
 .navbarColor {

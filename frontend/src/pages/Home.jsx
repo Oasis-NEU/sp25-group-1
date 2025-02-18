@@ -38,14 +38,14 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen backgroundBlue flex">
-      <div className="w-1/5 h-screen top-[11.7%] sticky">
+    <div className="min-h-screen flex">
+      <div className="w-[20%] h-screen top-[10%] sticky">
         <Sidecard />
       </div>
 
-      <div className="w-3/5 flex flex-col items-center">
+      <div className="w-[50%] flex flex-col items-center mx-[5%]">
         <div className="navbarColor rounded-2xl w-[95%] my-[3%] flex flex-col overflow-y-auto px-[3%]">
-          <InfiniteScroll dataLength={displayedPosts.length} next={fetchMorePosts} hasMore={more} loader={<h4>Loading...</h4>} endMessage={<p className="text-center text-white mb-3"><b>No More Posts!</b></p>}>
+          <InfiniteScroll dataLength={displayedPosts.length} next={fetchMorePosts} hasMore={more} loader={<p className="text-center text-white mb-3"><b>Loading!</b></p>} endMessage={<p className="text-center text-white mb-3"><b>No More Posts!</b></p>}>
             {displayedPosts.map((post, index) => (
               <div className="w-full flex justify-center min-h-[50vh] cursor-pointer" key={index} onClick={() => navigate(`/post/${post._id}`)}>
                 <PostMainPage title={post.title} image={post.images?.[0]}/>
@@ -55,7 +55,7 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="w-1/5 h-screen top-[11.7%] sticky backgroundBlue bg-yellow-400">
+      <div className="w-[20%] h-screen top-[10%] sticky">
             <RightSideCard />
       </div>
 
