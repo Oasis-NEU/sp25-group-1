@@ -6,14 +6,14 @@ import { jwtDecode } from "jwt-decode";
 
 export const Context = createContext();
 
-
 const ContextProvider = (props) => {
 
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
-    const [posts, setPosts] = useState([]);
-    const [token, setToken] = useState('');
-    const [userInfo, setUserInfo] = useState(undefined);
+    const backendUrl = import.meta.env.VITE_BACKEND_URL; // Backend url from env
+    const [posts, setPosts] = useState([]); // all posts
+    const [token, setToken] = useState(''); // current login token
+    const [userInfo, setUserInfo] = useState(undefined); // current user info
 
+    // Gets all posts using the getAllPosts endpoint
     const getPosts = async () => {
         try {
             const response = await axios.get(`${backendUrl}/api/posts/getAllPosts`);
@@ -28,12 +28,14 @@ const ContextProvider = (props) => {
         getPosts();
     }, []);
 
+    // Set the token if it exists
     useEffect(() => {
         if (!token && localStorage.getItem("token")) {
             setToken(localStorage.getItem("token"));
         }
     }, [])
 
+    // Fetch this user details
     useEffect(() => {
         const fetchUserData = async () => {
             if (token) {
@@ -53,6 +55,7 @@ const ContextProvider = (props) => {
         fetchUserData();
     }, [token]);
 
+    // Auto Remove Token when expired
     useEffect(() => {
         if (token) {
             try {
@@ -83,6 +86,7 @@ const ContextProvider = (props) => {
         }
     }, [token]);
 
+    // "Export" all the values
     const value = { posts, backendUrl, token, setToken, userInfo };
 
     return (<Context.Provider value={value}>

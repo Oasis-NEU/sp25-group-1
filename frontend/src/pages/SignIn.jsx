@@ -2,14 +2,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useEffect } from "react";
 import { Context } from "../context/context";
 import enterIcon from "../assets/enterIcon.png";
 
 const SignIn = () => {
+  // Create Navigate Instance
   const navigate = useNavigate();
-  const [currentState, setCurrentState] = useState("SignIn");
 
+  // States for sign-in page
+  const [currentState, setCurrentState] = useState("SignIn");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [user_name, setUsername] = useState("");
@@ -20,8 +21,9 @@ const SignIn = () => {
   const { token, setToken, backendUrl } = useContext(Context);
 
   const onSubmitHandler = async (event) => {
-    event.preventDefault();
+    event.preventDefault(); // Prevent refresh
     try {
+      // If state is sign-in, call login endpoint
       if (currentState === "SignIn") {
         const response = await axios.post(`${backendUrl}/api/user/login`, {
           email,
@@ -35,6 +37,8 @@ const SignIn = () => {
         } else {
           toast.error(response.data.error);
         }
+
+        // If state is create, call create user endpoint
       } else if (currentState === "Create") {
         const response = await axios.post(`${backendUrl}/api/user/create`, {
           first_name,
@@ -59,6 +63,7 @@ const SignIn = () => {
     }
   };
 
+  // Do not allow user to login if their token exists
   /*
     useEffect(() => {
         if (token) {
@@ -70,6 +75,7 @@ const SignIn = () => {
   return (
     <div className="h-screen backgroundBlue flex items-center justify-center">
       <div className="w-[50%] h-[50%] navbarColor rounded-lg flex flex-col items-center justify-center">
+        {/* Sign In Handler */}
         {currentState === "SignIn" ? (
           <form
             onSubmit={onSubmitHandler}
@@ -97,17 +103,21 @@ const SignIn = () => {
                 required
                 className="w-full outline-none"
               ></input>
+              {/* Submit Button Inside the Password Field */}
               <button type="submit" className="cursor-pointer w-[7%]">
                 <img src={enterIcon} alt="submit" className="w-full" />
               </button>
             </div>
+            {/* Forgot Password/Switch State/Submit */}
             <div className="flex flex-row justify-between w-[80%] mt-[2%]">
+              {/* Forgot Password */}
               <Link
                 to="/forgot-password"
                 className="postTitleColor rounded-lg px-2 py-1 text-white text-sm cursor-pointer"
               >
                 Forgot Password?
               </Link>
+              {/* Submit Button */}
               <button
                 type="submit"
                 onClick={() => onSubmitHandler}
@@ -116,19 +126,21 @@ const SignIn = () => {
                 Continue
               </button>
             </div>
+            {/* Switch to create account */}
             <div className="p-1.5 bg-blue-500 rounded-lg mt-[8%] cursor-pointer">
-                <p
+              <p
                 className="text-white text-sm"
                 onClick={() => setCurrentState("Create")}>
-                  New? Create your account
-                </p>
+                New? Create your account
+              </p>
             </div>
           </form>
         ) : (
-          <form
+          <form // Create Account Functionality
             onSubmit={onSubmitHandler}
             className="w-[90%] h-[90%] bg-[#131E34] rounded-lg flex flex-col items-center"
           >
+            {/* Page Title */}
             <div className="postTitleColor rounded-lg flex w-[50%] h-[10%] mt-[3%] justify-center items-center">
               <p className="text-white text-xl">Create Account</p>
             </div>
@@ -196,9 +208,8 @@ const SignIn = () => {
               <div className="flex flex-row gap-x-2">
                 {/* programmer option */}
                 <div
-                  className={`px-3 py-1 rounded-lg cursor-pointer ${
-                    role === "programmer" ? "bg-blue-500" : "bg-gray-500"
-                  }`}
+                  className={`px-3 py-1 rounded-lg cursor-pointer ${role === "programmer" ? "bg-blue-500" : "bg-gray-500"
+                    }`}
                   onClick={() => setRole("programmer")}
                 >
                   Developer
@@ -206,16 +217,16 @@ const SignIn = () => {
 
                 {/* designer option */}
                 <div
-                  className={`px-3 py-1 rounded-lg cursor-pointer ${
-                    role === "designer" ? "bg-blue-500" : "bg-gray-500"
-                  }`}
+                  className={`px-3 py-1 rounded-lg cursor-pointer ${role === "designer" ? "bg-blue-500" : "bg-gray-500"
+                    }`}
                   onClick={() => setRole("designer")}
                 >
                   Designer
                 </div>
               </div>
             </div>
-
+            
+            {/* Forgot Password/Submit/Login */}
             <div className="flex flex-row justify-between w-[80%] mt-[4%]">
               <Link
                 to="/forgot-password"
@@ -226,8 +237,8 @@ const SignIn = () => {
 
               <div className="px-2 py-1 bg-blue-500 rounded-lg cursor-pointer">
                 <p
-                className="text-white text-sm"
-                onClick={() => setCurrentState("SignIn")}>
+                  className="text-white text-sm"
+                  onClick={() => setCurrentState("SignIn")}>
                   Already have an account? Sign in
                 </p>
               </div>

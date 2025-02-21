@@ -6,12 +6,18 @@ import PostCode from "../components/PostCode";
 import axios from "axios";
 
 const Post = () => {
+  // Gets the post id from the url
   const { postId } = useParams();
+  
+  // gets every post and backend url from context
   const { posts, backendUrl } = useContext(Context);
+
+  // Sets up states for post content, author, and loader
   const [post, setPost] = useState(null);
   const [author, setAuthor] = useState(null);
   const [loadingAuthor, setLoadingAuthor] = useState(false);
 
+  // Try to find this post from all posts
   useEffect(() => {
     if (posts.length > 0) {
       const foundPost = posts.find((p) => p._id === postId);
@@ -19,7 +25,7 @@ const Post = () => {
     }
   }, [posts, postId]);
 
-
+  // Gets author information from the getProfileInformation endpoint
   useEffect(() => {
     const fetchAuthorData = async () => {
       if (!post || !post.author || author) return;
@@ -38,6 +44,7 @@ const Post = () => {
     fetchAuthorData();
   }, [post]);
 
+  // If the posts or author does not exist yet, set a loader
   if ((!post && posts.length === 0) || loadingAuthor) {
     return (
       <div className="backgroundBlue flex items-center justify-center h-screen">
@@ -46,6 +53,7 @@ const Post = () => {
     );
   }
 
+  // If there is no post, show an error message
   if (!post) {
     return (
       <div className="backgroundBlue flex items-center justify-center h-screen">
@@ -54,6 +62,7 @@ const Post = () => {
     );
   }
 
+  // Switches post display based on the post type state
   return (
     <>
       {post.post_type === "programmer" ? (

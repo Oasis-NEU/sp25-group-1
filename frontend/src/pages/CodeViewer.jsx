@@ -2,9 +2,16 @@ import { useState, useEffect } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 
+/*
+
+I AM PRETTY SURE WE DONT USE THIS, DO SOMETHING LATER
+
+*/
+
 const CodeFileViewer = () => {
   const [files, setFiles] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+
 
   const handleFileUpload = (e) => {
     const fileArray = Array.from(e.target.files);

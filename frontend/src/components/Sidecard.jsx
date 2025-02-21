@@ -2,13 +2,17 @@ import { Context } from "../context/context"
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Sidecard = () => {
+// Profile Sidecard on homepage
 
-  const { token, userInfo } = useContext(Context);
+const Sidecard = () => {
+  // Get user info from context 
+  const { userInfo } = useContext(Context);
   const navigate = useNavigate();
 
   return (
     <div className="p-[9.5%] cursor-pointer" onClick={() => navigate("/profile")}>
+      {/* Displays important user information like name, username, profile picture, and post number*/}
+      {/* Displays guest information otherwise */}
       <div className="navbarColor rounded-lg">
         <div className="text-white text-xl font-bold flex flex-col items-center justify-center">
           <p className="mt-[10%] mb-[5%]">{userInfo ? `${userInfo.first_name} ${userInfo.last_name}` : "Guest User"}</p>
