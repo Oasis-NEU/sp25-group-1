@@ -105,7 +105,7 @@ const ContextProvider = ({ children }) => {
     checkTokenExpiration();
   }, [token]);
 
-  const value = { posts, backendUrl, token, setToken, userInfo };
+  const value = { posts, getPosts, backendUrl, token, setToken, userInfo };
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 };

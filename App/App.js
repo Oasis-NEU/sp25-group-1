@@ -7,6 +7,8 @@ import Toast from "react-native-toast-message";
 
 import Home from "./screens/Home";
 import ContextProvider from "./context/Context";
+import CreatePost from "./screens/CreatePost";
+import SignIn from "./screens/SignIn";
 
 // Initialize Drawer Navigator
 const Drawer = createDrawerNavigator();
@@ -36,6 +38,8 @@ const App = () => {
           >
             <Drawer.Screen name="Home" component={Home} />
             <Drawer.Screen name="Profile" component={Profile} />
+            <Drawer.Screen name="CreatePost" component={CreatePost} />
+            <Drawer.Screen name="SignIn" component={SignIn} />
           </Drawer.Navigator>
           <Toast />
         </View>
