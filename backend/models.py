@@ -48,7 +48,7 @@ class Post(me.Document):
     images = me.ListField(me.StringField())
     files = me.ListField(me.DictField())
     looking_for = me.StringField(required=True, choices=["programmer", "designer"])
-    comments = me.ListField(me.StringField())
+    comments = comments = me.DictField()
     likes = me.IntField()
     created_at = me.DateTimeField()
     updated_at = me.DateTimeField()
