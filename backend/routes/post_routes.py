@@ -130,7 +130,7 @@ def create_post():
             images=uploaded_images,
             files=uploaded_files,
             looking_for=request.form.get('looking_for'),
-            comments=[],
+            comments={},
             likes=0,
             created_at=datetime.datetime.now(),
             updated_at=datetime.datetime.now(),
