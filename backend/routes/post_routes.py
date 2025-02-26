@@ -271,3 +271,107 @@ def get_posts_by_user():
         return jsonify({"documents":documents, "success":True, "status":200})
     except Exception as e:
         return jsonify({"error": str(e), "status":500})
+
+
+"""
+POST: /api/posts/makeComment
+JWT Required - PROTECTED ROUTE
+{
+    "post_id": "",  # ID of the post to comment on
+    "comment": ""    # The comment content
+}
+
+Adds a comment to a post
+Returns success message
+"""
+@post_bp.route('/makeComment', methods=["POST"])
+@jwt_required()
+def make_comment():
+    try:
+        user_id = get_jwt_identity()
+        user = User.objects(id=user_id).first()
+        if not user:
+            return jsonify({"error": "User not found", "success": False, "status": 404})
+
+        data = request.json
+        if not data:
+            return jsonify({"error": "Invalid JSON", "success":False, "status":400})
+
+        post_id = data["post_id"]
+        comment_text = data["comment"]
+
+        try:
+            post_id = ObjectId(post_id)
+        except Exception:
+            return jsonify({"error": "Invalid post_id format", "success": False, "status": 400})
+
+        post = Post.objects(id=post_id).first()
+        if not post:
+            return jsonify({"error": "Post not found", "success": False, "status": 404})
+
+        post.comments[str(user.username)] = comment_text
+
+        post.save()
+
+        return jsonify({"message": "Comment added successfully", "success": True, "status": 200})
+
+    except Exception as e:
+        return jsonify({"error": str(e), "success": False, "status": 500})
+
+
+"""
+GET: /api/posts/getComments
+JWT Required - PROTECTED ROUTE
+{
+    "post_id": ""  # ID of the post to fetch comments for
+}
+
+Fetches all comments for a post
+Returns success message and list of comments
+"""
+@post_bp.route('/getComments', methods=["GET"])
+@jwt_required()
+def get_comments():
+    try:
+        user_id = get_jwt_identity()
+        user = User.objects(id=user_id).first()
+        if not user:
+            return jsonify({"error": "User not found", "success": False, "status": 404})
+
+        data = request.json
+        if not data:
+            return jsonify({"error": "Invalid JSON", "success":False, "status":400})
+
+        post_id = data["post_id"]
+        if not post_id:
+            return jsonify({"error": "Missing 'post_id' parameter", "success": False, "status": 400})
+
+        try:
+            post_id = ObjectId(post_id)
+        except Exception:
+            return jsonify({"error": "Invalid post_id format", "success": False, "status": 400})
+
+        post = Post.objects(id=post_id).first()
+        if not post:
+            return jsonify({"error": "Post not found", "success": False, "status": 404})
+
+        comments = post.comments
+
+        comment_list = []
+        for user_id, comment_text in comments.items():
+            try:
+                user_obj = User.objects(id=ObjectId(user_id)).first()
+                username = user_obj.username if user_obj else "Unknown User"
+            except Exception:
+                username = "Unknown User"
+
+            comment_list.append({
+                "user_id": user_id,
+                "username": username,
+                "comment": commenttext
+            })
+
+        return jsonify({"comments": comment_list, "success": True, "status": 200})
+
+    except Exception as e:
+        return jsonify({"error": str(e), "success": False, "status": 500})
