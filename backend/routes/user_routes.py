@@ -203,6 +203,7 @@ def get_profile_information():
         profile = db.users.find_one({"_id": objID})
 
         if profile:
+            profile["id"] = data.get("profileId")
             # Remove certain fields from the profile
             exclude = ["_id", "password", "updated_at", "favorites", "settings"]
             for field in exclude:

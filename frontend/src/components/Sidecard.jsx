@@ -9,8 +9,10 @@ const Sidecard = () => {
   const { userInfo } = useContext(Context);
   const navigate = useNavigate();
 
+  console.log(userInfo)
+
   return (
-    <div className="p-[9.5%] cursor-pointer" onClick={() => navigate("/profile")}>
+    <div className="p-[9.5%] cursor-pointer" onClick={() => navigate(`/profile/${userInfo.id}`)}>
       {/* Displays important user information like name, username, profile picture, and post number*/}
       {/* Displays guest information otherwise */}
       <div className="navbarColor rounded-lg">

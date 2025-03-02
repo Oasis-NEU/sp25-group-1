@@ -149,6 +149,9 @@ def create_post():
         )
         post.save()
 
+        user.posts.append(str(post.id))
+        user.save()
+
         return jsonify({"message": "Post Successful", "success": True, "postId": str(post.id), "status": 200})
 
     except Exception as e:
@@ -273,11 +276,18 @@ def get_posts_by_user():
         
         collection = db.posts
         documents = list(collection.find({"author":obj_id}))
-        
+        print(documents)
+
         for doc in documents:
+            print(doc)
             doc["_id"] = str(doc["_id"])
             if "author" in doc:
                 doc["author"] = str(doc["author"])
+
+            if "comments" in doc:
+                for comment in doc["comments"]:
+                    if "user" in comment:
+                        comment["user"] = str(comment["user"])
                 
         return jsonify({"documents":documents, "success":True, "status":200})
     except Exception as e:
