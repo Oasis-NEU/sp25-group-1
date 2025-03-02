@@ -200,19 +200,14 @@ const SignIn = () => {
               ></input>
 
               {/* Password Input */}
-              <div className="bg-white flex justify-between items-center rounded-lg px-[2%] w-[80%] h-full mt-[2%] outline-none">
-                <input
-                  type="password"
-                  placeholder="Password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
-                  required
-                  className="w-full outline-none"
-                ></input>
-                <button type="submit" className="cursor-pointer w-[7%]">
-                  <img src={enterIcon} alt="submit" className="w-full" />
-                </button>
-              </div>
+              <input
+                type="password"
+                placeholder="Password"
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+                required
+                className="bg-white rounded-lg px-[2%] w-[80%] h-full mt-[2%] outline-none"
+              ></input>
             </div>
 
             <div className="bg-white rounded-lg px-[2%] w-[80%] h-[6%] mt-[3%] outline-none">

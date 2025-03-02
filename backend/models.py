@@ -68,6 +68,13 @@ class User(me.Document):
         "collection": "users"
     }
 
+# Comment model (Embedded)
+class Comment(me.EmbeddedDocument):
+    user = me.ReferenceField(User, required=True)
+    text = me.StringField(required=True)
+    created_at = me.DateTimeField(default=datetime.datetime.utcnow)
+
+
 # Post Model
 class Post(me.Document):
     title = me.StringField(required=True)
@@ -107,8 +114,8 @@ class Post(me.Document):
         "Other"
     ], required=True)
 
-    comments = comments = me.DictField()
-    likes = me.IntField()
+    comments = me.EmbeddedDocumentListField(Comment)
+    likes = me.IntField(default = 0)
     created_at = me.DateTimeField()
     updated_at = me.DateTimeField()
     post_type = me.StringField(required=True)
@@ -122,7 +129,7 @@ class Post(me.Document):
             "images": self.images,
             "files": self.files,
             "looking_for": self.looking_for,
-            "required_skills": self.required_skills,
+            "skills_used": self.skills_used,
             "preferred_experience": self.preferred_experience,
             "project_type": self.project_type,
             "comments": self.comments,

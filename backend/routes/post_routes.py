@@ -136,7 +136,7 @@ def create_post():
             skills_used=request.form.getlist("skills_used"),
             preferred_experience=request.form.get('preferred_experience'),
             project_type=request.form.get('project_type'),
-            comments={},
+            comments=[],
             likes=0,
             created_at=datetime.datetime.now(),
             updated_at=datetime.datetime.now(),
@@ -299,7 +299,7 @@ def make_comment():
             return jsonify({"error": "User not found", "success": False, "status": 404})
 
         data = request.json
-        if not data:
+        if not data or "post_id" not in data or "comment" not in data:
             return jsonify({"error": "Invalid JSON", "success":False, "status":400})
 
         post_id = data["post_id"]
@@ -314,7 +314,21 @@ def make_comment():
         if not post:
             return jsonify({"error": "Post not found", "success": False, "status": 404})
 
-        post.comments[str(user_id)] = comment_text
+        try:
+            user_id = ObjectId(user_id)
+        except Exception:
+            return jsonify({"error": "Invalid user_id format", "success": False, "status": 400})
+        
+        user = User.objects(id=user_id).first()
+        if not user:
+            return jsonify({"error": "User not found", "success": False, "status": 404})
+
+        new_comment = Comment(user=user, text=comment_text)
+
+        if post.comments is None:
+            post.comments = []
+
+        post.comments.append(new_comment)
         post.save()
 
         return jsonify({"message": "Comment added successfully", "success": True, "status": 200})
@@ -352,25 +366,20 @@ def get_comments():
         if not post:
             return jsonify({"error": "Post not found", "success": False, "status": 404})
 
-        comments = post.comments
+        comments = []
+        
+        for comment in post.comments:
+            comments.append(
+                {
+                    "user_id": str(comment.user.id),
+                    "user_name": comment.user.user_name if comment.user else "Unknown User",
+                    "profile_picture": comment.user.profile_picture if comment.user else "https://upload.wikimedia.org/wikipedia/commons/2/21/Solid_black.svg",
+                    "text": comment.text,
+                    "created_at": comment.created_at
+                }
+            )
 
-        comment_list = []
-        for user_id, comment_text in comments.items():
-            try:
-                user_obj = User.objects(id=ObjectId(user_id)).first()
-                username = user_obj.user_name if user_obj else "Unknown User"
-                profile_picture = user_obj.profile_picture if user_obj else "https://upload.wikimedia.org/wikipedia/commons/2/21/Solid_black.svg"
-            except Exception:
-                username = "Unknown User"
-                profile_picture = "https://upload.wikimedia.org/wikipedia/commons/2/21/Solid_black.svg"
-
-            comment_list.append({
-                "profile_picture": profile_picture,
-                "username": username,
-                "comment": comment_text
-            })
-
-        return jsonify({"comments": comment_list, "success": True, "status": 200})
+        return jsonify({"comments": comments, "success": True, "status": 200})
 
     except Exception as e:
         return jsonify({"error": str(e), "success": False, "status": 500})

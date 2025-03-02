@@ -73,7 +73,7 @@ const PostDesigner = ({ post, author }) => {
               </div>
               <div className="postTitleColor w-full rounded-md flex items-center px-[2%] mt-[2%]">
                 <p className="text-white text-md">
-                  Looking For: {post.looking_for}
+                  Project Type: {post.project_type}
                 </p>
               </div>
             </div>
@@ -93,17 +93,32 @@ const PostDesigner = ({ post, author }) => {
             >
               <p className="text-blue-500 text-sm">Comments</p>
             </div>
+
+            <div
+              onClick={() => setMode("other")}
+              className="bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer"
+            >
+              <p className="text-blue-500 text-sm">More</p>
+            </div>
           </div>
 
           {/* Conditional Display for Different Modes */}
           {mode === "description" && (
-            <div className="postTitleColor flex-10 w-full rounded-md flex p-[3%] overflow-y-scroll">
-              <p className="text-white text-xl">Description</p>
+            <div className="postTitleColor flex-10 w-full rounded-md flex flex-col p-[3%] overflow-y-scroll">
+              <p className="text-white text-md">{post.content}</p>
             </div>
           )}
 
           {mode === "comments" && (
             <CommentSection postId = {post._id}/>
+          )}
+
+          {mode === "other" && (
+            <div className="postTitleColor flex-10 w-full rounded-md flex flex-col p-[3%] overflow-y-scroll">
+              <p className="text-white text-md">{"Skills Used: " + post.skills_used}</p>
+              <p className="text-white text-md">{"Looking For: " + post.looking_for}</p>
+              <p className="text-white text-md">{"Preferred Experience: " + post.preferred_experience}</p>
+            </div>
           )}
 
         </div>

@@ -18,12 +18,10 @@ const CommentSection = ({ postId }) => {
 
     const fetchComments = async () => {
         try {
-            console.log(postId);
             const response = await axios.post(`${backendUrl}/api/posts/getComments`, { "post_id": postId });
             console.log(response.data.comments);
             if (response.data.success) {
                 setComments(response.data.comments);
-                console.log(comments);
             }
         } catch (error) {
             console.error("Error fetching comments:", error);
@@ -32,13 +30,12 @@ const CommentSection = ({ postId }) => {
 
     const commentHandler = async () => {
         try {
-            console.log(postId);
-            const response = 
+            const response =
                 await axios.post(`${backendUrl}/api/posts/makeComment`,
-                     { "post_id": postId, "comment": comment },
-                     { headers: { Authorization: `Bearer ${token}` } });
+                    { "post_id": postId, "comment": comment },
+                    { headers: { Authorization: `Bearer ${token}` } });
             console.log(response);
-            if (response.success) {
+            if (response.data.success) {
                 setComment("");
                 fetchComments();
             }
@@ -66,14 +63,13 @@ const CommentSection = ({ postId }) => {
 
         const newComments = comments.slice(index, index + 10);
         setDisplayedComments(prev => [...prev, ...newComments]);
-        setIndex(index + 10);
+        setIndex(prev => prev + 10);
 
         if (index + 10 >= comments.length) {
             setMore(false);
         }
     }
-
-
+    
     return (
         <div
             id="scrollableDiv"
@@ -90,7 +86,10 @@ const CommentSection = ({ postId }) => {
                             className="flex-grow border border-gray-300 rounded-md px-2 py-1 outline-none"
                         />
                         <button
-                            onClick={commentHandler}
+                            onClick={async () => {
+                                await commentHandler();
+                                fetchComments();
+                            }}
                             className="bg-blue-500 text-white px-3 py-1 rounded-md"
                         >
                             Comment
@@ -110,20 +109,29 @@ const CommentSection = ({ postId }) => {
             >
                 <div className="flex flex-col gap-2">
                     {displayedComments.map((comment) => (
-                        <div key={comment.id} className="bg-gray-800 rounded-md p-[2%] flex gap-[3%] items-center">
-                            <div className="w-8 h-8 rounded-full overflow-hidden">
-                                <img
-                                    src={comment.profile_picture}
-                                    alt="Profile"
-                                    className="w-full h-full object-cover"
-                                />
+                        <div
+                            key={comment.user_id}
+                            className="bg-gray-800 rounded-lg p-[2%] flex flex-col"
+                        >
+                            {/* Profile + Username */}
+                            <div className="flex items-center gap-[2%]">
+                                {/* Profile Picture */}
+                                <div className="max-w-[7%] max-h-[7%] rounded-full overflow-hidden flex-shrink-0">
+                                    <img
+                                        src={comment.profile_picture}
+                                        alt="Profile"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+
+                                {/* Username */}
+                                <p className="text-white font-semibold text-md">{comment.user_name}</p>
                             </div>
 
                             {/* Comment Content */}
-                            <div>
-                                <p className="text-white font-bold">{comment.username}</p>
-                                <p className="text-gray-300 text-sm">{comment.comment}</p>
-                            </div>
+                            <p className="text-gray-300 text-sm break-words whitespace-pre-line mt-[2%]">
+                                {comment.text}
+                            </p>
                         </div>
                     ))}
                 </div>
