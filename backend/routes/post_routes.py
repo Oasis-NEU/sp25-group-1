@@ -57,8 +57,11 @@ POST: /api/posts/createPost
     "content": ""
     "images": ["", ""] # Optional
     "files": ["", ""] # Optional
-    "looking_for": ["designer", "programmer"]
+    "looking_for": ["designer", "programmer", "none"]
     "post_type": ["designer", "programmer"]
+    "skills_used": ["", ""] # Optional
+    "preferred_experience": ["N/A", "Beginner", "Intermediate", "Expert"]
+    "project_type": "" #SEE LIST IN MODELS.PY
 }
 
 Creates a new post in the database
@@ -72,7 +75,7 @@ def create_post():
 
         token = request.form.get("token") or request.json.get("token")
         if not token:
-            return jsonify({"error": "Token is missing", "success": False, "status": 401}), 401
+            return jsonify({"error": "Login Again", "success": False, "status": 401}), 401
 
         user_id = decode_token(request.form.get("token")).get('sub')
         user = User.objects(id=user_id).first()
@@ -130,6 +133,9 @@ def create_post():
             images=uploaded_images,
             files=uploaded_files,
             looking_for=request.form.get('looking_for'),
+            skills_used=request.form.getlist("skills_used"),
+            preferred_experience=request.form.get('preferred_experience'),
+            project_type=request.form.get('project_type'),
             comments={},
             likes=0,
             created_at=datetime.datetime.now(),
@@ -289,8 +295,7 @@ Returns success message
 def make_comment():
     try:
         user_id = get_jwt_identity()
-        user = User.objects(id=user_id).first()
-        if not user:
+        if not user_id:
             return jsonify({"error": "User not found", "success": False, "status": 404})
 
         data = request.json
@@ -299,18 +304,17 @@ def make_comment():
 
         post_id = data["post_id"]
         comment_text = data["comment"]
-
+        
         try:
             post_id = ObjectId(post_id)
         except Exception:
             return jsonify({"error": "Invalid post_id format", "success": False, "status": 400})
-
+        
         post = Post.objects(id=post_id).first()
         if not post:
             return jsonify({"error": "Post not found", "success": False, "status": 404})
 
-        post.comments[str(user.username)] = comment_text
-
+        post.comments[str(user_id)] = comment_text
         post.save()
 
         return jsonify({"message": "Comment added successfully", "success": True, "status": 200})
@@ -320,8 +324,7 @@ def make_comment():
 
 
 """
-GET: /api/posts/getComments
-JWT Required - PROTECTED ROUTE
+POST: /api/posts/getComments
 {
     "post_id": ""  # ID of the post to fetch comments for
 }
@@ -329,15 +332,9 @@ JWT Required - PROTECTED ROUTE
 Fetches all comments for a post
 Returns success message and list of comments
 """
-@post_bp.route('/getComments', methods=["GET"])
-@jwt_required()
+@post_bp.route('/getComments', methods=["POST"])
 def get_comments():
     try:
-        user_id = get_jwt_identity()
-        user = User.objects(id=user_id).first()
-        if not user:
-            return jsonify({"error": "User not found", "success": False, "status": 404})
-
         data = request.json
         if not data:
             return jsonify({"error": "Invalid JSON", "success":False, "status":400})
@@ -361,14 +358,16 @@ def get_comments():
         for user_id, comment_text in comments.items():
             try:
                 user_obj = User.objects(id=ObjectId(user_id)).first()
-                username = user_obj.username if user_obj else "Unknown User"
+                username = user_obj.user_name if user_obj else "Unknown User"
+                profile_picture = user_obj.profile_picture if user_obj else "https://upload.wikimedia.org/wikipedia/commons/2/21/Solid_black.svg"
             except Exception:
                 username = "Unknown User"
+                profile_picture = "https://upload.wikimedia.org/wikipedia/commons/2/21/Solid_black.svg"
 
             comment_list.append({
-                "user_id": user_id,
+                "profile_picture": profile_picture,
                 "username": username,
-                "comment": commenttext
+                "comment": comment_text
             })
 
         return jsonify({"comments": comment_list, "success": True, "status": 200})

@@ -24,14 +24,21 @@ class User(me.Document):
     availability = me.StringField(choices=[
         "Full-time", 
         "Part-time", 
-        "Freelance", 
+        "Freelance",
         "Collaborative", 
         "Contract-Based", 
         "Mentorship", 
         "Casual",
+        "Internship",
+        "Remote",
+        "Hybrid",
+        "Volunteer",
+        "No Availability"
     ])
 
-    looking_for_collab = me.BooleanField(default=False)
+    looking_for_collab = me.StringField(choices=["Yes", "No", "Contact Me"])
+    bio = me.StringField()
+    location = me.StringField()
 
     created_at = me.DateTimeField()
     updated_at = me.DateTimeField()
@@ -68,10 +75,10 @@ class Post(me.Document):
     author = me.ReferenceField(User, required=True, reverse_delete_rule=me.CASCADE)
     images = me.ListField(me.StringField())
     files = me.ListField(me.DictField())
-    looking_for = me.StringField(required=True, choices=["programmer", "designer"])
+    looking_for = me.StringField(required=True, choices=["none", "programmer", "designer"])
     
-    required_skills = me.ListField(me.StringField(), default=[])
-    preferred_experience = me.StringField(choices=["Beginner", "Intermediate", "Expert"])
+    skills_used = me.ListField(me.StringField(), default=[])
+    preferred_experience = me.StringField(choices=["N/A", "Beginner", "Intermediate", "Expert"], required=True)
     project_type = me.StringField(choices=[
         "Freelance", 
         "Startup", 
@@ -97,7 +104,8 @@ class Post(me.Document):
         "Social Impact",
         "HealthTech",
         "FinTech",
-    ])
+        "Other"
+    ], required=True)
 
     comments = comments = me.DictField()
     likes = me.IntField()

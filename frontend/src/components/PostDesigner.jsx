@@ -103,7 +103,7 @@ const PostDesigner = ({ post, author }) => {
           )}
 
           {mode === "comments" && (
-            <CommentSection/>
+            <CommentSection postId = {post._id}/>
           )}
 
         </div>

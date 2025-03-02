@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Context } from "../context/context";
 import enterIcon from "../assets/enterIcon.png";
+import fields from "../assets/fields";
 
 const SignIn = () => {
   // Create Navigate Instance
@@ -17,6 +18,12 @@ const SignIn = () => {
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
   const [role, setRole] = useState("");
+  const [skills, setSkills] = useState([]);
+  const [experience, setExperience] = useState("Beginner");
+  const [interests, setInterests] = useState([]);
+  const [availability, setAvailability] = useState("No Availability");
+  const [colab, setColab] = useState("No");
+  const [location, setLocation] = useState("");
 
   const { token, setToken, backendUrl } = useContext(Context);
 
@@ -47,6 +54,12 @@ const SignIn = () => {
           email,
           password,
           role,
+          skills,
+          experience,
+          interests,
+          availability,
+          looking_for_collab: colab,
+          location,
         });
         if (response.data.success) {
           setToken(response.data.token);
@@ -74,7 +87,7 @@ const SignIn = () => {
 
   return (
     <div className="h-screen backgroundBlue flex items-center justify-center">
-      <div className="w-[50%] h-[50%] navbarColor rounded-lg flex flex-col items-center justify-center">
+      <div className="w-[70%] h-[70%] navbarColor rounded-lg flex flex-col items-center justify-center">
         {/* Sign In Handler */}
         {currentState === "SignIn" ? (
           <form
@@ -145,7 +158,7 @@ const SignIn = () => {
               <p className="text-white text-xl">Create Account</p>
             </div>
             {/* Names Input */}
-            <div className="flex flex-row w-[80%] h-[8%] mt-[3%] gap-x-3">
+            <div className="flex flex-row w-[80%] h-[6%] mt-[3%] gap-x-3">
               <input
                 type="name"
                 placeholder="First Name"
@@ -165,43 +178,127 @@ const SignIn = () => {
               ></input>
             </div>
 
-            {/* Username Input */}
-            <input
-              type="name"
-              placeholder="Username"
-              onChange={(e) => setUsername(e.target.value)}
-              value={user_name}
-              required
-              className="bg-white rounded-lg px-[2%] w-[80%] h-[8%] mt-[2%] outline-none"
-            ></input>
-
-            {/* Email Input */}
-            <input
-              type="email"
-              placeholder="Email"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
-              required
-              className="bg-white rounded-lg px-[2%] w-[80%] h-[8%] mt-[2%] outline-none"
-            ></input>
-
-            {/* Password Input */}
-            <div className="bg-white flex justify-between items-center rounded-lg px-[2%] w-[80%] h-[8%] mt-[2%] outline-none">
+            <div className="flex flex-row w-[80%] h-[6%] gap-x-3">
+              {/* Username Input */}
               <input
-                type="password"
-                placeholder="Password"
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
+                type="name"
+                placeholder="Username"
+                onChange={(e) => setUsername(e.target.value)}
+                value={user_name}
                 required
-                className="w-full outline-none"
+                className="bg-white rounded-lg px-[2%] w-[80%] h-full mt-[2%] outline-none"
               ></input>
-              <button type="submit" className="cursor-pointer w-[7%]">
-                <img src={enterIcon} alt="submit" className="w-full" />
-              </button>
+
+              {/* Email Input */}
+              <input
+                type="email"
+                placeholder="Email"
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
+                required
+                className="bg-white rounded-lg px-[2%] w-[80%] h-full mt-[2%] outline-none"
+              ></input>
+
+              {/* Password Input */}
+              <div className="bg-white flex justify-between items-center rounded-lg px-[2%] w-[80%] h-full mt-[2%] outline-none">
+                <input
+                  type="password"
+                  placeholder="Password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                  required
+                  className="w-full outline-none"
+                ></input>
+                <button type="submit" className="cursor-pointer w-[7%]">
+                  <img src={enterIcon} alt="submit" className="w-full" />
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg px-[2%] w-[80%] h-[6%] mt-[3%] outline-none">
+              <input
+                type="text"
+                placeholder="Enter your skills (comma separated)"
+                value={skills.join(", ")}
+                onChange={(e) => setSkills(e.target.value.split(",").map(skill => skill.trim()))}
+                className="bg-white rounded-lg w-full h-full outline-none"
+                required
+              />
+            </div>
+
+            <div className="bg-white rounded-lg px-[2%] w-[80%] h-[6%] mt-[2%] outline-none">
+              <input
+                type="text"
+                placeholder="Enter your interests (comma separated)"
+                value={interests.join(", ")}
+                onChange={(e) => setInterests(e.target.value.split(",").map(interest => interest.trim()))}
+                className="bg-white rounded-lg w-full h-full outline-none"
+                required
+              />
+            </div>
+
+            <div className="flex flex-row w-[80%] mt-[2%] items-center justify-between">
+              <div className="flex flex-col items-center">
+                <label className="text-white font-bold">Experience:</label>
+                <select
+                  value={experience}
+                  onChange={(e) => setExperience(e.target.value)}
+                  className="bg-white rounded-lg p-1 w-full outline-none"
+                  required
+                >
+                  <option value="Beginner">Beginner</option>
+                  <option value="Intermediate">Intermediate</option>
+                  <option value="Expert">Expert</option>
+                </select>
+              </div>
+
+
+              <div className="flex flex-col items-center">
+                <label className="text-white font-bold">Availability:</label>
+                <select
+                  value={availability}
+                  onChange={(e) => setAvailability(e.target.value)}
+                  className="bg-white rounded-lg p-1 w-full outline-none"
+                  required
+                >
+                  {fields.availability.map((field, index) => (
+                    <option key={index} value={field}>
+                      {field}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex flex-col items-center">
+                <label className="text-white font-bold">Collaboration?:</label>
+                <select
+                  value={colab}
+                  onChange={(e) => setColab(e.target.value)}
+                  className="bg-white rounded-lg p-1 w-full outline-none"
+                  required
+                >
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                  <option value="Contact Me">Contact Me</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col items-center">
+                <label className="text-white font-bold">Location:</label>
+                <input
+                  type="text"
+                  placeholder="Location"
+                  onChange={(e) => setLocation(e.target.value)}
+                  value={location}
+                  required
+                  className="bg-white rounded-lg py-0.5 outline-none px-2"
+                ></input>
+              </div>
+
             </div>
 
             {/* Role Input */}
-            <div className="flex flex-row w-[80%] mt-[2%] items-center text-white">
+            <div className="flex flex-row w-[80%] mt-[3%] items-center text-white">
               <p className="font-bold pr-5 underline underline-offset-8">
                 Select Role
               </p>
@@ -225,7 +322,7 @@ const SignIn = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Forgot Password/Submit/Login */}
             <div className="flex flex-row justify-between w-[80%] mt-[4%]">
               <Link

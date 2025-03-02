@@ -171,7 +171,7 @@ const PostCode = ({ post, author }) => {
             </div>
           )}
           {mode === "comments" && (
-            <CommentSection/>
+            <CommentSection postId = {post._id}/>
           )}
 
           {/* Buttons to show only when state is code*/}

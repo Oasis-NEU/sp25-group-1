@@ -8,6 +8,7 @@ from flask import Blueprint
 import random
 import string
 from bson.objectid import ObjectId, InvalidId
+from datetime import timedelta
 
 
 # Set up user blueprint at "/api/user"
@@ -74,6 +75,12 @@ POST: /api/user/create
     "settings": {}
     "profile_picture": ""
     "role": ""
+    "skills": []
+    "experience_level": "Beginner" | "Intermediate" | "Expert"
+    "interests": []
+    "availability": "" SEE FULL LIST IN MODELS.PY
+    "looking_for_collab": "Yes" | "No" | "Contact Me"
+    "location": ""
 }
 
 Creates a new user in the database
@@ -116,13 +123,20 @@ def create_user():
             favorites = [],
             posts = [],
             role = data.get('role'),
+            skills = data.get('skills'),
+            experience_level = data.get('experience_level'),
+            interests = data.get('interests'),
+            availability = data.get('availability'),
+            looking_for_collab = data.get('looking_for_collab'),
+            bio = "",
+            location = data.get('location'),
             created_at = datetime.datetime.now(),
             updated_at = datetime.datetime.now()
             )
         user.save()
 
         #Create JWT token and return it
-        token = create_access_token(identity=str(user.id))
+        token = create_access_token(identity=str(user.id), expires_delta=timedelta(hours=2))
         return jsonify({"message":"User Creation Successful", "success":True, "token":token, "status":200})
     except Exception as e:
         return jsonify({"error": str(e), "status":500})
@@ -152,7 +166,7 @@ def login():
 
         # Compare given and hashed password from database, if match, login
         if user and bcrypt.check_password_hash(user.password, password):
-            token = create_access_token(identity=str(user.id))
+            token = create_access_token(identity=str(user.id), expires_delta=timedelta(hours=2))
             return jsonify({"message":"Login Successful", "success":True, "token":token, "status":200})
         else:
             return jsonify({"error": "Invalid Email or Password", "success":False, "status":401})
