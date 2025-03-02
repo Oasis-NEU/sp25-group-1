@@ -46,6 +46,11 @@ def get_all_posts():
             if "author" in doc:
                 doc["author"] = str(doc["author"])
 
+            if "comments" in doc:
+                for comment in doc["comments"]:
+                    if "user" in comment:
+                        comment["user"] = str(comment["user"])
+
         return jsonify({"documents":documents, "success":True, "status":200})
     except Exception as e:
         return jsonify({"error": str(e), "status":500})
