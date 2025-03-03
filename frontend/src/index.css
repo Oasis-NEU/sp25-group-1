@@ -1,7 +1,12 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Source-sans";
+  src: url("../src/assets/Fonts/SourceSans3-VariableFont_wght.ttf");
+}
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Source-sans", sans-serif;
   font-weight: 400;
 
   font-synthesis: none;
