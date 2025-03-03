@@ -11,7 +11,7 @@ const CreatePost = () => {
     const [images, setImages] = useState([]);
     const [files, setFiles] = useState([]);
     const [lookingFor, setLookingFor] = useState("none");
-    const [skillsUsed, setSkillsUsed] = useState([]);
+    const [skillsUsed, setSkillsUsed] = useState("");
     const [preferredExperience, setPreferredExperience] = useState("N/A");
     const [projectType, setProjectType] = useState("Other");
 
@@ -46,7 +46,7 @@ const CreatePost = () => {
             // Individually send the images and files
             images.forEach((image) => formData.append("images", image));
             files.forEach((file) => formData.append("files", file));
-            skillsUsed.filter(skill => skill.trim() !== "").forEach((skill) => formData.append("skills_used", skill));
+            skillsUsed.split(",").filter(skill => skill.trim() !== "").forEach((skill) => formData.append("skills_used", skill));
 
             // Axios call to create post
             const response = await axios.post(`${backendUrl}/api/posts/createPost`,
@@ -211,8 +211,8 @@ const CreatePost = () => {
                                 <input
                                     type="text"
                                     placeholder="Enter skills (comma separated)"
-                                    value={skillsUsed.join(", ")}
-                                    onChange={(e) => setSkillsUsed(e.target.value.split(",").map(skill => skill.trim()))}
+                                    value={skillsUsed}
+                                    onChange={(e) => setSkillsUsed(e.target.value)}
                                     className="bg-white rounded-lg p-2 w-full outline-none"
                                     required
                                 />

@@ -60,31 +60,6 @@ const Profile = () => {
     fetchProfilePosts();
   }, [loadingProfile]);
 
-
-  // Initialize displayed posts for infinite scrolling
-  useEffect(() => {
-    if (posts.length > 0) {
-      setDisplayedPosts(posts.slice(0, 10));
-      setMore(posts.length > 10);
-      setIndex(10);
-    }
-  }, [posts]);
-
-  // Function to fetch and set 10 more posts
-  const fetchMorePosts = () => {
-    if (posts.length === 0) return;
-    setDisplayedPosts(prevDisplayedPosts => {
-      const newPosts = posts.slice(index, index + 10);
-      return [...prevDisplayedPosts, ...newPosts];
-    });
-
-    setIndex((prevIndex) => prevIndex + 10);
-
-    if (index + 10 >= posts.length) {
-      setMore(false);
-    }
-  };
-
   // If profile is still loading, show a loader
   if (loadingProfile) {
     return (
@@ -113,96 +88,147 @@ const Profile = () => {
   }
 
   return (
-    <div className="h-screen backgroundBlue flex justify-center">
-      <div className="navbarColor rounded-lg w-[60%] mt-[2%] mb-[2%]">
-
-        {/* Profile Picture */}
-
-        <div className="w-full flex">
-          <div className="px-[5%] w-[30%] mt-[3%]">
+    <div className="max-h-screen backgroundBlue flex justify-center p-[2%]">
+      <div className="flex flex-col w-[20%] gap-[5vh]">
+        <div className="navbarColor w-full min-h-[35vh] flex flex-col justify-between rounded-t-lg rounded-b-xl">
+          <div className="text-white text-xl font-bold flex flex-col items-center justify-center pt-[5%]">
+            <p className="">{profile ? `${profile.first_name} ${profile.last_name}` : "Guest User"}</p>
+          </div>
+          <div className="text-white text-sm font-bold flex flex-col items-center justify-center">
+            <p className="px-[10%] bg-blue-500 rounded-lg">{profile ? `${profile.role}` : "Guest User"}</p>
+          </div>
+          <div className="flex items-center justify-center">
             <img
-              className="rounded-full border-2 border-blue-500"
-              src={profile.profile_picture}
+              className="rounded-full border-2 border-blue-500 w-[40%] object-cover"
+              src={profile?.profile_picture || "https://upload.wikimedia.org/wikipedia/commons/2/21/Solid_black.svg"}
               alt="profile picture"
             />
           </div>
 
-          <div className="w-[65%] mt-[8%] flex-col">
-            {/* Username */}
-            <div className="w-[80%] h-10 bg-white items-center rounded-lg justify-end text-[160%]">
-              <p className="flex justify-center">{profile.user_name}</p>
+          <div>
+            <div className="text-white text-sm font-bold flex flex-col items-center justify-center bg-blue-500 cursor-pointer">
+              <p>{profile.user_name}</p>
             </div>
 
-            <div className="flex">
-              {/* Full Name */}
-              <div className="mt-[6%] w-[45%] h-[15%] items-center bg-white rounded-lg justify-end text-[87.5%]">
-                <p className="flex justify-center">{profile.first_name} {profile.last_name}</p>
-              </div>
-
-              {/* Email */}
-              <div className="ml-[10%] mt-[6%] w-[45%] h-[15%] items-center bg-white rounded-lg justify-end text-[87.5%]">
-                <p className="flex justify-center">{profile.email}</p>
-              </div>
+            <div className="text-white text-sm font-bold flex flex-col items-center justify-center bg-blue-500 cursor-pointer">
+              <p>{profile.email}</p>
             </div>
 
-            <div className="flex">
-              {/* Role */}
-              <div className="mt-[1.5%] w-[45%] h-[15%] items-center bg-white rounded-lg justify-end text-[87.5%]">
-                <p className="flex justify-center">{profile.role}</p>
-              </div>
-
-              {/* More Contact */}
-              <div className="ml-[10%] mt-[1.5%] w-[45%] h-[15%] items-center bg-white rounded-lg justify-end text-[87.5%]">
-                <p className="flex justify-center">Other (Contact)</p>
-              </div>
+            <div className="text-white text-sm font-bold flex flex-col items-center justify-center bg-blue-500 cursor-pointer mt-[5%] rounded-b-lg">
+              <p>Message Me</p>
             </div>
           </div>
         </div>
-        <div className="ml-[5%] w-full flex">
-          {/* Posts */}
-          <div className="mt-[3%] h-[80%] w-[65%] items-center bg-white rounded-lg text-[215%]">
-            <p className="flex justify-center">Posts</p>
+
+        <div className="w-full overflow-y-auto">
+
+          <div className="flex flex-row items-center gap-[5%] pb-[5%]">
+            <p className="font-bold text-blue-500">Bio</p>
+            <hr className="flex-1 border-t border-gray-300" />
           </div>
 
-          {/* Favorite */}
-          <div className="ml-[3%] mt-[5.5%] h-[30%] w-[22%] cursor-pointer items-center bg-white rounded-lg text-[87.5%]">
-            <p className="flex justify-center">Favorite</p>
+          <div className="flex flex-wrap gap-2 pb-[5%]">
+            <div className="text-white text-sm">
+              {profile.bio}
+            </div>
           </div>
-        </div>
 
-        {/* Scrollable Div with Infinite scroll */}
-        <div className="flex items-center px-[5%] mt-[2%] navbarColor h-[60%]">
-          <div
-            id="scrollableDiv"
-            className="flex flex-col overflow-y-scroll h-full w-full"
-          >
-            {/* Sets up the infinite scroll component with loaders and more function */}
-            <InfiniteScroll
-              dataLength={displayedPosts.length}
-              next={fetchMorePosts}
-              hasMore={more}
-              loader={<h4 className="text-white">Loading...</h4>}
-              endMessage={
-                <p className="text-center mt-3 text-white mb-3">
-                  <b>No More Posts!</b>
-                </p>
-              }
-              scrollableTarget="scrollableDiv"
-            >
-              {/* Maps the posts from earlier inside the div*/}
-              {displayedPosts.map((post, index) => (
-                <div
-                  className="w-full flex justify-center min-h-[50vh] cursor-pointer"
-                  key={index}
-                  onClick={() => navigate(`/post/${post._id}`)}
-                >
-                  <PostMainPage title={post.title} image={post.images?.[0]} />
-                </div>
-              ))}
-            </InfiniteScroll>
+          <div className="flex flex-row items-center gap-[5%] pb-[5%]">
+            <p className="font-bold text-blue-500">Location</p>
+            <hr className="flex-1 border-t border-gray-300" />
+          </div>
+
+          <div className="flex flex-wrap gap-2 pb-[5%]">
+            <div className="px-3 py-1 bg-black text-white rounded-full text-sm">
+              {profile.location}
+            </div>
+          </div>
+
+          <div className="flex flex-row items-center gap-[5%] pb-[5%]">
+            <p className="font-bold text-blue-500">Availability</p>
+            <hr className="flex-1 border-t border-gray-300" />
+          </div>
+
+          <div className="flex flex-wrap gap-2 pb-[5%]">
+            <div className="px-3 py-1 bg-black text-white rounded-full text-sm">
+              {profile.availability}
+            </div>
+          </div>
+
+          <div className="flex flex-row items-center gap-[5%] pb-[5%]">
+            <p className="font-bold text-blue-500">Open to Collaboration?</p>
+            <hr className="flex-1 border-t border-gray-300" />
+          </div>
+
+          <div className="flex flex-wrap gap-2 pb-[5%]">
+            <div className="px-3 py-1 bg-black text-white rounded-full text-sm">
+              {profile.looking_for_collab}
+            </div>
+          </div>
+
+          <div className="flex flex-row items-center gap-[5%] pb-[5%]">
+            <p className="font-bold text-blue-500">Skills</p>
+            <hr className="flex-1 border-t border-gray-300" />
+          </div>
+
+          <div className="flex flex-wrap gap-2 pb-[5%]">
+            {profile.skills.slice(0, 10).filter((skill) => skill !== "").map((skill, index) => (
+              <div
+                key={index}
+                className="px-3 py-1 bg-black text-white rounded-full text-sm"
+              >
+                {skill}
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-row items-center gap-[5%] pb-[5%]">
+            <p className="font-bold text-blue-500">Interests</p>
+            <hr className="flex-1 border-t border-gray-300" />
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {profile.interests.slice(0, 10).filter((skill) => skill !== "").map((interest, index) => (
+              <div
+                key={index}
+                className="px-3 py-1 bg-black text-white rounded-full text-sm"
+              >
+                {interest}
+              </div>
+            ))}
           </div>
         </div>
       </div>
+
+      <div className="w-[80%] h-[80vh] pl-[2%] overflow-y-auto grid grid-cols-4 auto-rows-[25vh] gap-x-[1vh] gap-y-[1vh]">
+        {posts.length === 0 ? (
+          <p className="text-white text-lg">No Posts</p>
+        ) : (
+          posts.map((post, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-lg shadow-lg p-[5%] cursor-pointer flex flex-col"
+              onClick={() => navigate(`/post/${post._id}`)}
+            >
+              {/* Post Image */}
+              <img
+                src={post.images[0]}
+                alt="Post Image"
+                className="w-full h-[80%] object-cover rounded-md"
+              />
+
+              {/* Post Title */}
+              <h3 className="text-lg font-bold text-center mt-2 text-gray-800 truncate">
+                {post.title}
+              </h3>
+            </div>
+          ))
+        )}
+      </div>
+
+
+
+
     </div>
   );
 };

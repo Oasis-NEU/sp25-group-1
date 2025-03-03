@@ -116,14 +116,12 @@ const PostCode = ({ post, author }) => {
               </div>
             </div>
             {/* Box for Username/LookingFor Info*/}
-            <div className=" flex-3 flex flex-col justify-center">
-              <div className="postTitleColor w-full rounded-md flex items-center px-[2%] mb-[2%]">
-                <p className="text-white text-md">
+            <div className=" flex-3 flex flex-col justify-center gap-[10%]">
+              <div className="inline-block w-fit px-3 py-0.5 bg-white text-black rounded-full text-sm">
                   {author && author.user_name ? author.user_name : "Unknown User"}
-                </p>
               </div>
-              <div className="postTitleColor w-full rounded-md flex items-center px-[2%] mt-[2%]">
-                <p className="text-white text-md">Looking For: {post.looking_for}</p>
+              <div className="inline-block w-fit px-3 py-0.5 bg-white text-black rounded-full text-sm">
+                  Project Type: {post.project_type}
               </div>
             </div>
           </div>
@@ -169,9 +167,29 @@ const PostCode = ({ post, author }) => {
 
           {mode === "other" && (
             <div className="postTitleColor flex-10 w-full rounded-md flex flex-col p-[3%] overflow-y-scroll">
-              <p className="text-white text-md">{"Skills Used: " + post.skills_used}</p>
-              <p className="text-white text-md">{"Looking For: " + post.looking_for}</p>
-              <p className="text-white text-md">{"Preferred Experience: " + post.preferred_experience}</p>
+              <div className="text-white text-md">
+                <p className="pb-[2%]">Skills Used: </p>
+                <div className="flex flex-wrap gap-2 pb-[2%]">
+                  {post.skills_used.filter((skill) => skill !== "").map((skill, index) => (
+                    <div
+                      key={index}
+                      className="px-3 py-1 bg-white text-black rounded-full text-sm"
+                    >
+                      {skill}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="text-white text-md pb-[2%]">
+                <p className="pb-[2%]">Looking For: </p>
+                <div className="inline-block px-3 py-1 bg-white text-black rounded-full text-sm">{post.looking_for}</div>
+              </div>
+
+              <div className="text-white text-md pb-[2%]">
+                <p className="pb-[2%]">Preferred Experience: </p>
+                <div className="inline-block px-3 py-1 bg-white text-black rounded-full text-sm">{post.preferred_experience}</div>
+              </div>
             </div>
           )}
 
@@ -225,17 +243,17 @@ const PostCode = ({ post, author }) => {
           <div className="w-full h-full flex flex-col pl-[6%] py-[2%]">
             {/* Other images (If they exist) */}
             {extraImages.length > 0 && (
-              <div className="flex-[2] w-full flex gap-[10%] items-start rounded-lg">
+              <div className="flex-[1.5] w-auto h-auto flex justify-center items-center gap-2 overflow-x-auto rounded-lg p-2">
                 {extraImages.map((image, index) => (
                   <div
                     key={index}
-                    className="bg-transparent w-[20%] h-[40%] rounded-md flex items-center justify-center overflow-hidden"
+                    className="bg-white w-[30%] h-[70%] object-cover rounded-md flex items-center justify-center overflow-hidden cursor-pointer"
                     onClick={() => handleImageClick(image, index)}
                   >
                     <img
                       src={image}
                       alt={`Extra ${index + 1}`}
-                      className="max-w-full max-h-full aspect-auto object-contain rounded-md"
+                      className="w-full h-full object-cover rounded-md"
                     />
                   </div>
                 ))}
@@ -243,11 +261,11 @@ const PostCode = ({ post, author }) => {
             )}
 
             {/* Main Image */}
-            <div className="flex-[4] w-full flex items-start justify-start">
+            <div className="flex-[5] w-full h-full rounded-lg flex justify-center items-center overflow-hidden">
               <img
                 src={currentImage}
-                alt="Post Main Image"
-                className="max-w-full max-h-full aspect-auto object-contain rounded-lg"
+                alt=""
+                className="max-w-full max-h-full w-auto h-auto object-contain rounded-lg"
               />
             </div>
           </div>

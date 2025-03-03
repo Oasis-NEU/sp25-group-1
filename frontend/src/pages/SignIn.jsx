@@ -18,9 +18,9 @@ const SignIn = () => {
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
   const [role, setRole] = useState("");
-  const [skills, setSkills] = useState([]);
+  const [skills, setSkills] = useState("");
   const [experience, setExperience] = useState("Beginner");
-  const [interests, setInterests] = useState([]);
+  const [interests, setInterests] = useState("");
   const [availability, setAvailability] = useState("No Availability");
   const [colab, setColab] = useState("No");
   const [location, setLocation] = useState("");
@@ -47,6 +47,17 @@ const SignIn = () => {
 
         // If state is create, call create user endpoint
       } else if (currentState === "Create") {
+
+        const formattedSkills = skills
+        .split(",")
+        .map(skill => skill.trim())
+        .filter(skill => skill !== "");
+
+        const formattedInterests = interests
+        .split(",")
+        .map(skill => skill.trim())
+        .filter(skill => skill !== "");
+
         const response = await axios.post(`${backendUrl}/api/user/create`, {
           first_name,
           last_name,
@@ -54,9 +65,9 @@ const SignIn = () => {
           email,
           password,
           role,
-          skills,
+          skills: formattedSkills,
           experience,
-          interests,
+          interests: formattedInterests,
           availability,
           looking_for_collab: colab,
           location,
@@ -214,19 +225,20 @@ const SignIn = () => {
               <input
                 type="text"
                 placeholder="Enter your skills (comma separated)"
-                value={skills.join(", ")}
-                onChange={(e) => setSkills(e.target.value.split(",").map(skill => skill.trim()))}
+                value={skills}
+                onChange={(e) => setSkills(e.target.value)}
                 className="bg-white rounded-lg w-full h-full outline-none"
                 required
               />
             </div>
 
+
             <div className="bg-white rounded-lg px-[2%] w-[80%] h-[6%] mt-[2%] outline-none">
               <input
                 type="text"
                 placeholder="Enter your interests (comma separated)"
-                value={interests.join(", ")}
-                onChange={(e) => setInterests(e.target.value.split(",").map(interest => interest.trim()))}
+                value={interests}
+                onChange={(e) => setInterests(e.target.value)}
                 className="bg-white rounded-lg w-full h-full outline-none"
                 required
               />
@@ -279,10 +291,10 @@ const SignIn = () => {
               </div>
 
               <div className="flex flex-col items-center">
-                <label className="text-white font-bold">Location:</label>
+                <label className="text-white font-bold">Country:</label>
                 <input
                   type="text"
-                  placeholder="Location"
+                  placeholder="Country"
                   onChange={(e) => setLocation(e.target.value)}
                   value={location}
                   required
