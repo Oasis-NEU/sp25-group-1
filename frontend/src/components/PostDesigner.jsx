@@ -2,12 +2,14 @@ import { useState, useContext } from "react";
 import CommentSection from "./CommentSection";
 import { Context } from "../context/context";
 import FavoriteButton from "../components/FavoriteButton";
+import { useNavigate } from "react-router-dom";
 
 const PostDesigner = ({ post, author }) => {
   const [extraImages, setExtraImages] = useState(post.images?.slice(1) || []);
   const [currentImage, setCurrentImage] = useState(post.images?.[0] || "");
   const [mode, setMode] = useState("description");
   const { favorite, token } = useContext(Context);
+  const navigate = useNavigate();
 
   // Function to handle clicking side images
   const handleImageClick = (image, index) => {
@@ -70,7 +72,8 @@ const PostDesigner = ({ post, author }) => {
             </div>
             {/* Box for Username/LookingFor Info*/}
             <div className=" flex-3 flex flex-col justify-center gap-[10%]">
-              <div className="inline-block w-fit px-3 py-0.5 bg-white text-black rounded-full text-sm">
+              <div className="inline-block w-fit px-3 py-0.5 bg-white text-black rounded-full text-sm cursor-pointer transition:transform duration-100 hover:scale-105"
+                onClick={() => navigate(`/profile/${post.author}`)}>
                 {author && author.user_name ? author.user_name : "Unknown User"}
               </div>
               <div className="inline-block w-fit px-3 py-0.5 bg-white text-black rounded-full text-sm">

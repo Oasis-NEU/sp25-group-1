@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
 const RightSideCard = () => {
   const { token, user } = useContext(Context);
@@ -13,18 +14,18 @@ const RightSideCard = () => {
     <div className="pt-[9.5%] flex flex-col items-center justify-center">
       <div className="navbarColor rounded-lg flex flex-col items-center gap-y-4 w-[40%]">
         <div onClick={() => navigate("/sign-in")}
-          className="bg-indigo-500 rounded-lg w-[50%] h-[50%] aspect-square mt-[15%] transition-transform duration-100 hover:scale-105 flex items-center justify-center shadow-md">
+          className="bg-indigo-500 rounded-lg w-[50%] h-[50%] aspect-square mt-[15%] cursor-pointer transition-transform duration-100 hover:scale-105 flex items-center justify-center shadow-md">
           <AssignmentIndIcon className="text-white" />
         </div>
         <div onClick={() => navigate("/favorites")}
-          className="bg-indigo-500 rounded-lg w-[50%] h-[50%] aspect-square mt-[15%] transition-transform duration-100 hover:scale-105 flex items-center justify-center shadow-md">
+          className="bg-indigo-500 rounded-lg w-[50%] h-[50%] aspect-square cursor-pointer transition-transform duration-100 hover:scale-105 flex items-center justify-center shadow-md">
           <BookmarkIcon className="text-white" />
         </div>
-        <div className="bg-indigo-500 rounded-lg w-[50%] h-[50%]">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Solid_black.svg" alt="" />
+        <div className="bg-indigo-500 rounded-lg w-[50%] h-[50%] aspect-square cursor-pointer transition-transform duration-100 hover:scale-105 flex items-center justify-center shadow-md">
+          <TrendingUpIcon className="text-white" />
         </div>
-        <div className="bg-indigo-500 rounded-lg w-[50%] h-[50%] mb-[15%]">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Solid_black.svg" alt="" />
+        <div className="bg-indigo-500 rounded-lg w-[50%] h-[50%] mb-[15%] aspect-square cursor-pointer transition-transform duration-100 hover:scale-105 flex items-center justify-center shadow-md">
+          
         </div>
       </div>
       {/* Make a post button */}

@@ -68,7 +68,7 @@ const Favorites = () => {
             {posts.map((post, index) => (
               <div
                 key={index}
-                className="bg-white rounded-lg shadow-lg p-[5%] cursor-pointer flex flex-col"
+                className="bg-white rounded-lg shadow-lg p-[5%] cursor-pointer flex flex-col transition:transform duration-100 hover:scale-101"
                 onClick={() => navigate(`/post/${post.id}`)}
               >
                 {/* Post Image */}

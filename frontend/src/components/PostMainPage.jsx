@@ -23,7 +23,7 @@ const PostMainPage = ({ title, image, likes: initalLikes, id }) => {
 
         <div className={`w-1/3 rounded-md flex items-center justify-center gap-[10%] ${!token ? "hidden" : ""}`}>
           <ThumbUpAlt
-            className="w-[10%] opacity-75 cursor-pointer"
+            className="w-[10%] opacity-75 cursor-pointer transition:transform duration-100 hover:scale-110"
             onClick={async (e) => {
               e.stopPropagation();
               const newReaction = userLiked ? "dislike" : "like";
@@ -37,7 +37,7 @@ const PostMainPage = ({ title, image, likes: initalLikes, id }) => {
             style={{ color: userLiked ? "#1976d2" : "gray" }}
           />
           <ThumbDownAlt
-            className="w-[10%] opacity-75 cursor-pointer"
+            className="w-[10%] opacity-75 cursor-pointer transition:transform duration-100 hover:scale-110"
             onClick={async (e) => {
               e.stopPropagation();
               const newReaction = userUnliked ? "like" : "dislike";

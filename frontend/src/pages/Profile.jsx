@@ -103,11 +103,11 @@ const Profile = () => {
           </div>
 
           <div>
-            <div className="text-white text-sm font-bold flex flex-col items-center justify-center bg-indigo-500 cursor-pointer">
+            <div className="text-white text-sm font-bold flex flex-col items-center justify-center bg-indigo-500">
               <p>{profile.user_name}</p>
             </div>
 
-            <div className="text-white text-sm font-bold flex flex-col items-center justify-center bg-indigo-500 cursor-pointer">
+            <div className="text-white text-sm font-bold flex flex-col items-center justify-center bg-indigo-500">
               <p>{profile.email}</p>
             </div>
 
@@ -204,7 +204,7 @@ const Profile = () => {
           posts.map((post, index) => (
             <div
               key={index}
-              className="bg-white rounded-lg shadow-lg p-[5%] cursor-pointer flex flex-col"
+              className="bg-white rounded-lg shadow-lg p-[5%] cursor-pointer flex flex-col transition-transform duration-100 hover:scale-101"
               onClick={() => navigate(`/post/${post._id}`)}
             >
               {/* Post Image */}

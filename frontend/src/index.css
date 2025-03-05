@@ -60,7 +60,9 @@ button {
 }
 
 .navbarColor {
-  background-color: #192439;
+  background-color: rgba(25, 36, 57, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* For Safari */
 }
 
 .postTitleColor {
