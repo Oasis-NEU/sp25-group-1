@@ -3,6 +3,7 @@ import CommentSection from "./CommentSection";
 import { Context } from "../context/context";
 import FavoriteButton from "../components/FavoriteButton";
 import { useNavigate } from "react-router-dom";
+import BackButton from "./BackButton";
 
 const PostDesigner = ({ post, author }) => {
   const [extraImages, setExtraImages] = useState(post.images?.slice(1) || []);
@@ -144,8 +145,9 @@ const PostDesigner = ({ post, author }) => {
             </div>
           )}
 
-          <div className="bg-transparent flex-0.5 w-full rounded-m flex justify-end">
+          <div className="bg-transparent flex-0.5 w-full rounded-m flex justify-end gap-[1%]">
             <FavoriteButton postId={post._id} onFavorite={favorite} token={token} />
+            <BackButton />
           </div>
         </div>
       </div>

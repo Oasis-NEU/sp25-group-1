@@ -5,7 +5,7 @@ import CommentSection from "./CommentSection";
 import FavoriteButton from "../components/FavoriteButton";
 import { Context } from "../context/context";
 import { useNavigate } from "react-router-dom";
-useNavigate
+import BackButton from "./BackButton";
 
 const PostCode = ({ post, author }) => {
   const [mode, setMode] = useState("description");
@@ -77,16 +77,6 @@ const PostCode = ({ post, author }) => {
     return languageMap[extension] || "plaintext";
   };
 
-  const handleKeyDown = (event) => {
-    const key = event.key;
-
-    if (key === "ArrowRight") {
-      setCurrentIndex((prev) => (prev === files.length - 1 ? 0 : prev + 1));
-    } else if (key === "ArrowLeft") {
-      setCurrentIndex((prev) => (prev === 0 ? files.length - 1 : prev - 1));
-    }
-  };
-
 
   // Function to handle clicking side images
   const handleImageClick = (image, index) => {
@@ -95,13 +85,6 @@ const PostCode = ({ post, author }) => {
     setCurrentImage(image);
     setExtraImages(newExtraImages);
   };
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [files.length]);
 
   return (
     <div className="backgroundBlue flex items-center justify-center h-screen">
@@ -244,7 +227,8 @@ const PostCode = ({ post, author }) => {
           </div>
 
           {/* Show favorite button only when mode is NOT code */}
-          <div className={`bg-transparent flex-0.5 w-full rounded-m flex justify-start ${mode === "code" ? "hidden" : ""}`}>
+          <div className={`bg-transparent flex-0.5 w-full rounded-m flex justify-start gap-[1%] ${mode === "code" ? "hidden" : ""}`}>
+            <BackButton />
             <FavoriteButton postId={post._id} onFavorite={favorite} token={token} />
           </div>
 

@@ -135,7 +135,6 @@ const ContextProvider = (props) => {
         }
     };
 
-
     // "Export" all the values
     const value = { posts, backendUrl, token, setToken, userInfo, userId, updatePostReaction, favorite};
 
