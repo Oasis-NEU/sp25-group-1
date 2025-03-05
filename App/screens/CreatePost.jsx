@@ -154,7 +154,7 @@ const CreatePost = () => {
       <Text style={tw`text-white text-lg pt-4`}>Looking For:</Text>
       <View style={tw`flex-row py-4 gap-2`}>
         <TouchableOpacity
-          style={tw`px-4 py-2 rounded-lg ${lookingFor === "programmer" ? "bg-blue-500" : "bg-gray-500"
+          style={tw`px-4 py-2 rounded-lg ${lookingFor === "programmer" ? "bg-indigo-500" : "bg-gray-500"
             }`}
           onPress={() => setLookingFor("programmer")}
         >
@@ -162,7 +162,7 @@ const CreatePost = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={tw`px-4 py-2 rounded-lg ${lookingFor === "designer" ? "bg-blue-500" : "bg-gray-500"
+          style={tw`px-4 py-2 rounded-lg ${lookingFor === "designer" ? "bg-indigo-500" : "bg-gray-500"
             }`}
           onPress={() => setLookingFor("designer")}
         >
@@ -189,7 +189,7 @@ const CreatePost = () => {
       {/* Submit Button */}
       <View style={tw`pt-[20%]`}>
         <TouchableOpacity
-          style={tw`bg-blue-500 p-2 mt-4 rounded-lg items-center`}
+          style={tw`bg-indigo-500 p-2 mt-4 rounded-lg items-center`}
           onPress={onSubmitHandler}
           disabled={sendLoading}
         >

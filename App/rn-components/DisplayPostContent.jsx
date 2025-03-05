@@ -108,9 +108,9 @@ const DisplayPostContent = ({ post, author }) => {
         {/* Images */}
 
         <Carousel
-          controlsTextStyle={tw`text-blue-500 text-10 opacity-50`}
+          controlsTextStyle={tw`text-indigo-500 text-10 opacity-50`}
           dotStyle={tw`w-2 h-2 bg-white rounded-full mx-1 opacity-50`}
-          activeDotStyle={tw`w-2 h-2 bg-blue-500 rounded-full mx-1 opacity-50`}
+          activeDotStyle={tw`w-2 h-2 bg-indigo-500 rounded-full mx-1 opacity-50`}
         >
           {post?.images?.map((image, index) => (
             <Image
@@ -129,7 +129,7 @@ const DisplayPostContent = ({ post, author }) => {
           style={tw`flex-1`}
         >
           <View style={tw`bg-white px-5 py-1 rounded-md items-center`}>
-            <Text style={tw`text-blue-500 text-sm`}>Description</Text>
+            <Text style={tw`text-indigo-500 text-sm`}>Description</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -137,13 +137,13 @@ const DisplayPostContent = ({ post, author }) => {
           style={tw`flex-1`}
         >
           <View style={tw`bg-white px-5 py-1 rounded-md items-center`}>
-            <Text style={tw`text-blue-500 text-sm`}>Comments</Text>
+            <Text style={tw`text-indigo-500 text-sm`}>Comments</Text>
           </View>
         </TouchableOpacity>
         {post?.post_type === "programmer" && (
           <TouchableOpacity onPress={() => setMode("code")} style={tw`flex-1`}>
             <View style={tw`bg-white px-5 py-1 rounded-md items-center`}>
-              <Text style={tw`text-blue-500 text-sm`}>Code</Text>
+              <Text style={tw`text-indigo-500 text-sm`}>Code</Text>
             </View>
           </TouchableOpacity>
         )}
@@ -179,7 +179,7 @@ const DisplayPostContent = ({ post, author }) => {
         }`}
       >
         <TouchableOpacity
-          style={tw`px-3 py-0.5 bg-blue-500 text-white rounded-md`}
+          style={tw`px-3 py-0.5 bg-indigo-500 text-white rounded-md`}
           activeOpacity={0.7}
           onPress={() =>
             setCurrentIndex((prev) =>
@@ -190,7 +190,7 @@ const DisplayPostContent = ({ post, author }) => {
           <Text>Previous</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={tw`px-3 py-0.5 bg-blue-500 text-white rounded-md`}
+          style={tw`px-3 py-0.5 bg-indigo-500 text-white rounded-md`}
           activeOpacity={0.7}
           onPress={() =>
             setCurrentIndex((prev) =>

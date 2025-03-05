@@ -72,7 +72,14 @@ class User(me.Document):
 class Comment(me.EmbeddedDocument):
     user = me.ReferenceField(User, required=True)
     text = me.StringField(required=True)
-    created_at = me.DateTimeField(default=datetime.datetime.utcnow)
+    created_at = me.DateTimeField()
+
+    def to_json(self):
+        return {
+            "user": str(self.user.id) if self.user else None,
+            "text": self.text,
+            "created_at": self.created_at
+        }
 
 
 # Post Model
@@ -116,6 +123,8 @@ class Post(me.Document):
 
     comments = me.EmbeddedDocumentListField(Comment)
     likes = me.IntField(default = 0)
+    likedBy = me.ListField(default = [])
+    unlikedBy = me.ListField(default = [])
     created_at = me.DateTimeField()
     updated_at = me.DateTimeField()
     post_type = me.StringField(required=True)
@@ -132,8 +141,10 @@ class Post(me.Document):
             "skills_used": self.skills_used,
             "preferred_experience": self.preferred_experience,
             "project_type": self.project_type,
-            "comments": self.comments,
+            "comments": [comment.to_json() for comment in self.comments],
             "likes": self.likes,
+            "likedBy": self.likedBy,
+            "unlikedBy": self.unlikedBy,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
             "post_type":self.post_type

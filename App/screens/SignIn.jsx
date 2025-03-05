@@ -117,7 +117,7 @@ const SignIn = () => {
                 <Text style={tw`text-white mt-4 mb-2`}>You are a ...</Text>
                 <View style={tw`flex-row gap-2`}>
                   <TouchableOpacity
-                    style={tw`px-3 py-1.5 rounded-lg ${role === "programmer" ? "bg-blue-500" : "bg-gray-500"
+                    style={tw`px-3 py-1.5 rounded-lg ${role === "programmer" ? "bg-indigo-500" : "bg-gray-500"
                       }`}
                     onPress={() => setRole("programmer")}
                   >
@@ -125,7 +125,7 @@ const SignIn = () => {
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    style={tw`px-3 py-1.5 rounded-lg ${role === "designer" ? "bg-blue-500" : "bg-gray-500"
+                    style={tw`px-3 py-1.5 rounded-lg ${role === "designer" ? "bg-indigo-500" : "bg-gray-500"
                       }`}
                     onPress={() => setRole("designer")}
                   >
@@ -155,7 +155,7 @@ const SignIn = () => {
             />
 
             <TouchableOpacity
-              style={tw`bg-blue-500 p-2 mt-4 rounded-lg items-center`}
+              style={tw`bg-indigo-500 p-2 mt-4 rounded-lg items-center`}
               onPress={onSubmitHandler}
             >
               <Text style={tw`text-white`}>

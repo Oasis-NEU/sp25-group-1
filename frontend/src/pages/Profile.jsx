@@ -16,11 +16,6 @@ const Profile = () => {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [loadingPosts, setLoadingPosts] = useState(true);
 
-  // States for infinite scroll
-  const [displayedPosts, setDisplayedPosts] = useState([]);
-  const [more, setMore] = useState(false);
-  const [index, setIndex] = useState(10);
-
   // Fetch profile information
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -87,6 +82,8 @@ const Profile = () => {
     );
   }
 
+  console.log(posts)
+
   return (
     <div className="max-h-screen backgroundBlue flex justify-center p-[2%]">
       <div className="flex flex-col w-[20%] gap-[5vh]">
@@ -95,26 +92,26 @@ const Profile = () => {
             <p className="">{profile ? `${profile.first_name} ${profile.last_name}` : "Guest User"}</p>
           </div>
           <div className="text-white text-sm font-bold flex flex-col items-center justify-center">
-            <p className="px-[10%] bg-blue-500 rounded-lg">{profile ? `${profile.role}` : "Guest User"}</p>
+            <p className="px-[10%] bg-indigo-500 rounded-lg">{profile ? `${profile.role}` : "Guest User"}</p>
           </div>
           <div className="flex items-center justify-center">
             <img
-              className="rounded-full border-2 border-blue-500 w-[40%] object-cover"
+              className="rounded-full border-2 border-indigo-500 w-[40%] object-cover"
               src={profile?.profile_picture || "https://upload.wikimedia.org/wikipedia/commons/2/21/Solid_black.svg"}
               alt="profile picture"
             />
           </div>
 
           <div>
-            <div className="text-white text-sm font-bold flex flex-col items-center justify-center bg-blue-500 cursor-pointer">
+            <div className="text-white text-sm font-bold flex flex-col items-center justify-center bg-indigo-500 cursor-pointer">
               <p>{profile.user_name}</p>
             </div>
 
-            <div className="text-white text-sm font-bold flex flex-col items-center justify-center bg-blue-500 cursor-pointer">
+            <div className="text-white text-sm font-bold flex flex-col items-center justify-center bg-indigo-500 cursor-pointer">
               <p>{profile.email}</p>
             </div>
 
-            <div className="text-white text-sm font-bold flex flex-col items-center justify-center bg-blue-500 cursor-pointer mt-[5%] rounded-b-lg">
+            <div className="text-white text-sm font-bold flex flex-col items-center justify-center bg-indigo-500 cursor-pointer mt-[5%] rounded-b-lg">
               <p>Message Me</p>
             </div>
           </div>
@@ -123,7 +120,7 @@ const Profile = () => {
         <div className="w-full overflow-y-auto">
 
           <div className="flex flex-row items-center gap-[5%] pb-[5%]">
-            <p className="font-bold text-blue-500">Bio</p>
+            <p className="font-bold text-indigo-500">Bio</p>
             <hr className="flex-1 border-t border-gray-300" />
           </div>
 
@@ -134,7 +131,7 @@ const Profile = () => {
           </div>
 
           <div className="flex flex-row items-center gap-[5%] pb-[5%]">
-            <p className="font-bold text-blue-500">Location</p>
+            <p className="font-bold text-indigo-500">Location</p>
             <hr className="flex-1 border-t border-gray-300" />
           </div>
 
@@ -145,7 +142,7 @@ const Profile = () => {
           </div>
 
           <div className="flex flex-row items-center gap-[5%] pb-[5%]">
-            <p className="font-bold text-blue-500">Availability</p>
+            <p className="font-bold text-indigo-500">Availability</p>
             <hr className="flex-1 border-t border-gray-300" />
           </div>
 
@@ -156,7 +153,7 @@ const Profile = () => {
           </div>
 
           <div className="flex flex-row items-center gap-[5%] pb-[5%]">
-            <p className="font-bold text-blue-500">Open to Collaboration?</p>
+            <p className="font-bold text-indigo-500">Open to Collaboration?</p>
             <hr className="flex-1 border-t border-gray-300" />
           </div>
 
@@ -167,7 +164,7 @@ const Profile = () => {
           </div>
 
           <div className="flex flex-row items-center gap-[5%] pb-[5%]">
-            <p className="font-bold text-blue-500">Skills</p>
+            <p className="font-bold text-indigo-500">Skills</p>
             <hr className="flex-1 border-t border-gray-300" />
           </div>
 
@@ -183,7 +180,7 @@ const Profile = () => {
           </div>
 
           <div className="flex flex-row items-center gap-[5%] pb-[5%]">
-            <p className="font-bold text-blue-500">Interests</p>
+            <p className="font-bold text-indigo-500">Interests</p>
             <hr className="flex-1 border-t border-gray-300" />
           </div>
 
@@ -225,10 +222,6 @@ const Profile = () => {
           ))
         )}
       </div>
-
-
-
-
     </div>
   );
 };

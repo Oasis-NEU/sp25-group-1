@@ -1,9 +1,57 @@
-const PostMainPage = ({ title, image }) => {
+import { Context } from "../context/context";
+import { useContext, useState } from "react";
+import axios from "axios";
+import { ThumbUpAlt, ThumbDownAlt } from "@mui/icons-material";
+
+const PostMainPage = ({ title, image, likes: initalLikes, id }) => {
+
+  const { backendUrl, userId, token, updatePostReaction } = useContext(Context)
+  const [likes, setLikes] = useState(initalLikes)
+  const [userLiked, setUserLiked] = useState(false);
+  const [userUnliked, setUserUnliked] = useState(false);
+
+
   return (
     <div className="backgroundNoPattern p-4 rounded-2xl w-full h-[50vh] mt-[3%] flex flex-col">
       {/* Title Section */}
-      <div className="postTitleColor h-[10%] w-2/3 rounded-md flex items-center px-[2%]">
-        <p className="text-white text-[175%]">{title}</p>
+
+      <div className="w-full h-[10%] flex flex-row">
+        <div className="postTitleColor w-2/3 rounded-md flex items-center px-[2%]">
+          <p className="text-white text-[175%]">{title}</p>
+        </div>
+
+
+        <div className={`w-1/3 rounded-md flex items-center justify-center gap-[10%] ${!token ? "hidden" : ""}`}>
+          <ThumbUpAlt
+            className="w-[10%] opacity-75 cursor-pointer"
+            onClick={async (e) => {
+              e.stopPropagation();
+              const newReaction = userLiked ? "dislike" : "like";
+              const updatedLike = await updatePostReaction(id, newReaction);
+              if (typeof updatedLike === "number") {
+                setLikes(updatedLike)
+                setUserLiked(!userLiked);
+                setUserUnliked(false);
+              }
+            }}
+            style={{ color: userLiked ? "#1976d2" : "gray" }}
+          />
+          <ThumbDownAlt
+            className="w-[10%] opacity-75 cursor-pointer"
+            onClick={async (e) => {
+              e.stopPropagation();
+              const newReaction = userUnliked ? "like" : "dislike";
+              const updatedLike = await updatePostReaction(id, newReaction);
+              if (typeof updatedLike === "number") {
+                setLikes(updatedLike);
+                setUserUnliked(!userUnliked);
+                setUserLiked(false);
+              }
+            }}
+            style={{ color: userUnliked ? "#d32f2f" : "gray" }}
+          />
+          <p className="text-white text-xl font-bold">{likes}</p>
+        </div>
       </div>
 
       {/* Image Section */}

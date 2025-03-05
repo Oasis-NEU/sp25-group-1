@@ -203,7 +203,6 @@ def get_profile_information():
         profile = db.users.find_one({"_id": objID})
 
         if profile:
-            profile["id"] = data.get("profileId")
             # Remove certain fields from the profile
             exclude = ["_id", "password", "updated_at", "favorites", "settings"]
             for field in exclude:
@@ -214,3 +213,56 @@ def get_profile_information():
             return jsonify({"message":"Error Fetching Profile/Does Not Exist", "success":False, "status":400})
     except Exception as e:
         return jsonify({"error": str(e), "status":500})
+
+"""
+POST: /api/user/getUserFavorites
+{
+    "userId": ""
+}
+
+Fetches the posts in a user's favorites
+Returns success, message, and data
+ONLY RETURNS THE FIRST IMAGE, NAME (MODIFY IF EVER NEED MORE INFO)
+"""
+@user_bp.route('/getUserFavorites', methods=["POST"])
+def get_user_favorites():
+    if request.headers.get('Content-Type') != 'application/json':
+        return jsonify({"error": "Content-Type must be application/json", "success": False, "status": 400})
+
+    data = request.json
+    if not data:
+        return jsonify({"error": "Invalid JSON", "success": False, "status": 400})
+
+    user_id = data.get("userId")
+    if not user_id:
+        return jsonify({"error": "User ID is required", "success": False, "status": 400})
+
+    try:
+        objId = ObjectId(user_id)
+    except (errors.InvalidId, TypeError):
+        return jsonify({"error": "Invalid user ID format", "success": False, "status": 400})
+
+    user = db.users.find_one({"_id": objId})
+    if user is None:
+        return jsonify({"error": "User not found", "success": False, "status": 404})
+
+    try:
+        fav_obj_ids = []
+        for postId in user['favorites']:
+            fav_obj_ids.append(ObjectId(postId))
+    except Exception as e:
+        return jsonify({"error": f"Invalid user ID in favorites: {e}", "success": False, "status": 400})
+
+    favorite_posts = Post.objects(id__in=fav_obj_ids)
+
+    # Posts to JSON
+    favorite_posts_json = [
+        {
+            "id": str(post.id),
+            "title": post.title,
+            "images": post.images
+        }
+        for post in favorite_posts
+    ]
+
+    return jsonify({"favorites": favorite_posts_json, "success": True, "status": 200})

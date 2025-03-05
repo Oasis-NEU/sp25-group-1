@@ -90,7 +90,7 @@ const CommentSection = ({ postId }) => {
                                 await commentHandler();
                                 fetchComments();
                             }}
-                            className="bg-blue-500 text-white px-3 py-1 rounded-md"
+                            className="bg-indigo-500 text-white px-3 py-1 rounded-md"
                         >
                             Comment
                         </button>

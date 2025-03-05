@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import CommentSection from "./CommentSection";
+import { Context } from "../context/context";
+import FavoriteButton from "../components/FavoriteButton";
 
 const PostDesigner = ({ post, author }) => {
   const [extraImages, setExtraImages] = useState(post.images?.slice(1) || []);
   const [currentImage, setCurrentImage] = useState(post.images?.[0] || "");
   const [mode, setMode] = useState("description");
+  const { favorite, token } = useContext(Context);
 
   // Function to handle clicking side images
   const handleImageClick = (image, index) => {
@@ -68,10 +71,10 @@ const PostDesigner = ({ post, author }) => {
             {/* Box for Username/LookingFor Info*/}
             <div className=" flex-3 flex flex-col justify-center gap-[10%]">
               <div className="inline-block w-fit px-3 py-0.5 bg-white text-black rounded-full text-sm">
-                  {author && author.user_name ? author.user_name : "Unknown User"}
+                {author && author.user_name ? author.user_name : "Unknown User"}
               </div>
               <div className="inline-block w-fit px-3 py-0.5 bg-white text-black rounded-full text-sm">
-                  Project Type: {post.project_type}
+                Project Type: {post.project_type}
               </div>
             </div>
           </div>
@@ -79,23 +82,23 @@ const PostDesigner = ({ post, author }) => {
           <div className="w-full flex justify-end gap-2">
             <div
               onClick={() => setMode("description")}
-              className="bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer"
+              className="bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer transition-transform duration-100 hover:scale-102 shadow-md"
             >
-              <p className="text-blue-500 text-sm">Description</p>
+              <p className="text-indigo-500 text-sm">Description</p>
             </div>
 
             <div
               onClick={() => setMode("comments")}
-              className="bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer"
+              className="bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer transition-transform duration-100 hover:scale-102 shadow-md"
             >
-              <p className="text-blue-500 text-sm">Comments</p>
+              <p className="text-indigo-500 text-sm">Comments</p>
             </div>
 
             <div
               onClick={() => setMode("other")}
-              className="bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer"
+              className="bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer transition-transform duration-100 hover:scale-102 shadow-md"
             >
-              <p className="text-blue-500 text-sm">More</p>
+              <p className="text-indigo-500 text-sm">More</p>
             </div>
           </div>
 
@@ -138,6 +141,9 @@ const PostDesigner = ({ post, author }) => {
             </div>
           )}
 
+          <div className="bg-transparent flex-0.5 w-full rounded-m flex justify-end">
+            <FavoriteButton postId={post._id} onFavorite={favorite} token={token} />
+          </div>
         </div>
       </div>
     </div>

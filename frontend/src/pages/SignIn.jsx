@@ -151,7 +151,7 @@ const SignIn = () => {
               </button>
             </div>
             {/* Switch to create account */}
-            <div className="p-1.5 bg-blue-500 rounded-lg mt-[8%] cursor-pointer">
+            <div className="p-1.5 bg-indigo-500 rounded-lg mt-[8%] cursor-pointer">
               <p
                 className="text-white text-sm"
                 onClick={() => setCurrentState("Create")}>
@@ -312,7 +312,7 @@ const SignIn = () => {
               <div className="flex flex-row gap-x-2">
                 {/* programmer option */}
                 <div
-                  className={`px-3 py-1 rounded-lg cursor-pointer ${role === "programmer" ? "bg-blue-500" : "bg-gray-500"
+                  className={`px-3 py-1 rounded-lg cursor-pointer ${role === "programmer" ? "bg-indigo-500" : "bg-gray-500"
                     }`}
                   onClick={() => setRole("programmer")}
                 >
@@ -321,7 +321,7 @@ const SignIn = () => {
 
                 {/* designer option */}
                 <div
-                  className={`px-3 py-1 rounded-lg cursor-pointer ${role === "designer" ? "bg-blue-500" : "bg-gray-500"
+                  className={`px-3 py-1 rounded-lg cursor-pointer ${role === "designer" ? "bg-indigo-500" : "bg-gray-500"
                     }`}
                   onClick={() => setRole("designer")}
                 >
@@ -339,7 +339,7 @@ const SignIn = () => {
                 Forgot Password?
               </Link>
 
-              <div className="px-2 py-1 bg-blue-500 rounded-lg cursor-pointer">
+              <div className="px-2 py-1 bg-indigo-500 rounded-lg cursor-pointer">
                 <p
                   className="text-white text-sm"
                   onClick={() => setCurrentState("SignIn")}>

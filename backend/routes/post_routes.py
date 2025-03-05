@@ -143,6 +143,7 @@ def create_post():
             project_type=request.form.get('project_type'),
             comments=[],
             likes=0,
+            likedBy=[],
             created_at=datetime.datetime.now(),
             updated_at=datetime.datetime.now(),
             post_type=request.form.get("post_type")
@@ -155,73 +156,72 @@ def create_post():
         return jsonify({"message": "Post Successful", "success": True, "postId": str(post.id), "status": 200})
 
     except Exception as e:
-        print(e)
         return jsonify({"error": str(e), "success": False, "status": 500})
 
 
 """
-POST: /api/posts/likePost
+POST: /api/posts/react
 {
     "post_id":""
+    "user_id":""
+    "reaction_type":""
 }
 
-Increases like count for a particular post
+Increases like/dislike count for a particular post
 Returns success message
 """
-@post_bp.route('/likePost', methods=["POST"])
-def like_post():
-    #Sets data from request
+
+@post_bp.route('/react', methods=['POST'])
+def react():
     data = request.json
-    if not data:
-        return jsonify({"error": "Invalid JSON", "success":False, "status":400})
+    user_id = data.get("user_id")
+    post_id = data.get("post_id")
+    reaction_type = data.get("reaction_type") 
+
+    if reaction_type not in ["like", "dislike"]:
+        return jsonify({"error": "Invalid Reaction", "success":False, "status":400})
 
     try:
-        postId = data.get("post_id")
-        post = Post.objects(id=postId).first()
-        if not post:
-            return jsonify({"error": "Post not found", "success":False, "status":404})
-        
-        post.likes += 1
+        user = User.objects.get(id=user_id)
+        post = Post.objects.get(id=post_id)
+
+        if reaction_type == "like":
+            if user_id in post.likedBy:
+                post.likedBy.remove(user_id)
+                post.likes -= 1
+                message = "Like removed"
+            else:
+                if user_id in post.unlikedBy:
+                    post.unlikedBy.remove(user_id)
+
+                post.likedBy.append(user_id)
+                post.likes += 1
+                message = "Liked"
+
+        elif reaction_type == "dislike":
+            if user_id in post.unlikedBy:
+                post.unlikedBy.remove(user_id)
+                message = "Dislike removed"
+            else:
+                if user_id in post.likedBy:
+                    post.likedBy.remove(user_id)
+                    post.likes -= 1
+
+                post.unlikedBy.append(user_id)
+                message = "Disliked"
 
         post.save()
-        return jsonify({"message":"Post Liked", "success":True, "status":200})
+        return jsonify({"message": message, "success": True, "likes": post.likes, "status": 200})
+
     except Exception as e:
-        return jsonify({"error": str(e), "status":500})
+        return jsonify({"error": str(e), "success": False, "status": 500})
 
-
-"""
-POST: /api/posts/unlikePost
-{
-    "post_id":""
-}
-
-Decreases like count for a particular post
-Returns success message
-"""
-@post_bp.route('/unlikePost', methods=["POST"])
-def unlike_post():
-    data = request.json
-    if not data:
-        return jsonify({"error": "Invalid JSON", "success":False, "status":400})
-
-    try:
-        postId = data.get("post_id")
-        post = Post.objects(id=postId).first()
-        if not post:
-            return jsonify({"error": "Post not found", "success":False, "status":404})
-        
-        post.likes -= 1
-        
-        post.save()
-        return jsonify({"message":"Post Unliked", "success":True, "status":200})
-    
-    except Exception as e:
-        return jsonify({"error": str(e), "status":500})
     
 """
 POST: /api/posts/deletePost
 {
     "post_id":""
+    "user_id":""
 }
 
 Deletes the post from database
@@ -398,3 +398,58 @@ def get_comments():
 
     except Exception as e:
         return jsonify({"error": str(e), "success": False, "status": 500})
+
+"""
+POST: /api/posts/favoritePost
+{
+    "userId": ""
+    "postId": ""
+}
+
+Adds this post id to users favorite
+Returns success, message, and data
+"""
+@post_bp.route('/favoritePost', methods=["POST"])
+def add_to_favorite():
+    if request.headers.get('Content-Type') != 'application/json':
+        return jsonify({"error": "Content-Type must be application/json", "success": False, "status": 400})
+
+    data = request.json
+    if not data:
+        return jsonify({"error": "Invalid JSON", "success": False, "status": 400})
+
+    user_id = data.get("userId")
+    if not user_id:
+        return jsonify({"error": "User ID is required", "success": False, "status": 400})
+
+    post_id = data.get("postId")
+    if not post_id:
+        return jsonify({"error": "Post ID is required", "success": False, "status": 400})
+
+    try:
+        user_objId = ObjectId(user_id)
+        post_objId = ObjectId(post_id)
+    except Exception:
+        return jsonify({"error": "Invalid ID format", "success": False, "status": 400})
+
+    user = User.objects(id=user_objId).first()
+    if user is None:
+        return jsonify({"error": "User not found", "success": False, "status": 404})
+
+    post = Post.objects(id=post_objId).first()
+    if post is None:
+        return jsonify({"error": "Post not found", "success": False, "status": 404})
+
+    if user.favorites is None:
+        user.favorites = []
+
+    if post_id in user.favorites:
+        user.favorites.remove(post_id)
+        message = "Post removed from favorites"
+    else:
+        user.favorites.append(post_id)
+        message = "Post added to favorites"
+    
+    user.save()
+
+    return jsonify({"message": message, "success": True, "status": 200})

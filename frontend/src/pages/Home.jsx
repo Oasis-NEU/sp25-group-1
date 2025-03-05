@@ -42,7 +42,7 @@ const Home = () => {
   return (
     <div className="min-h-screen flex">
       {/* Put the left profile sidecard on the left 20% of the screen*/}
-      <div className="w-[20%] h-screen top-[10%] sticky">
+      <div className="w-[20%] h-screen top-[10%] sticky transition-transform duration-100 hover:scale-101">
         <Sidecard />
       </div>
 
@@ -53,7 +53,7 @@ const Home = () => {
           {/* Map each of the posts, pass them to the post page with their respective id */}
             {displayedPosts.map((post, index) => (
               <div className="w-full flex justify-center min-h-[50vh] cursor-pointer" key={index} onClick={() => navigate(`/post/${post._id}`)}>
-                <PostMainPage title={post.title} image={post.images?.[0]}/>
+                <PostMainPage title={post.title} image={post.images?.[0]} likes={post.likes} id={post._id}/>
               </div>
             ))}
           </InfiniteScroll>

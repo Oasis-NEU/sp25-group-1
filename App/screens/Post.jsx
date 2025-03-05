@@ -49,7 +49,7 @@ const Post = () => {
   // If the posts or author does not exist yet, set a loader
   if ((!post && posts.length === 0) || loadingAuthor) {
     return (
-      <View style={tw`flex-1 bg-blue-500 items-center justify-center`}>
+      <View style={tw`flex-1 bg-indigo-500 items-center justify-center`}>
         <ActivityIndicator size="large" color="#ffffff" />
         <Text style={tw`text-white text-xl mt-4`}>Loading post...</Text>
       </View>
@@ -59,7 +59,7 @@ const Post = () => {
   // If there is no post, show an error message
   if (!post) {
     return (
-      <View style={tw`flex-1 bg-blue-500 items-center justify-center`}>
+      <View style={tw`flex-1 bg-indigo-500 items-center justify-center`}>
         <Text style={tw`text-white text-xl`}>Post not found</Text>
       </View>
     );

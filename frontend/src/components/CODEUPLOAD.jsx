@@ -131,14 +131,14 @@ const PostCode2 = ({post}) => {
                 onClick={() => setMode("code")}
                 className="bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer"
               >
-                <p className="text-blue-500 text-sm">Switch to Code</p>
+                <p className="text-indigo-500 text-sm">Switch to Code</p>
               </div>
             ) : (
               <div
                 onClick={() => setMode("description")}
                 className="bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer"
               >
-                <p className="text-blue-500 text-sm">Switch to Description</p>
+                <p className="text-indigo-500 text-sm">Switch to Description</p>
               </div>
             )}
           </div>

@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 import CommentSection from "./CommentSection";
+import FavoriteButton from "../components/FavoriteButton";
+import { Context } from "../context/context";
 
 const PostCode = ({ post, author }) => {
   const [mode, setMode] = useState("description");
@@ -9,6 +11,7 @@ const PostCode = ({ post, author }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentImage, setCurrentImage] = useState(post.images?.[0] || "");
   const [extraImages, setExtraImages] = useState(post.images?.slice(1) || []);
+  const { favorite, token } = useContext(Context);
 
   useEffect(() => {
     if (post.files && post.files.length > 0) {
@@ -130,31 +133,31 @@ const PostCode = ({ post, author }) => {
           <div className="w-full flex justify-start gap-2">
             <div
               onClick={() => setMode("description")}
-              className={`bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer ${mode === "description" ? "bg-gray-300" : ""
+              className={`bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer transition-transform duration-100 hover:scale-102 shadow-md ${mode === "description" ? "bg-gray-300" : ""
                 }`}
             >
-              <p className="text-blue-500 text-sm">Description</p>
+              <p className="text-indigo-500 text-sm">Description</p>
             </div>
             <div
               onClick={() => setMode("code")}
-              className={`bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer ${mode === "code" ? "bg-gray-300" : ""
+              className={`bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer transition-transform duration-100 hover:scale-102 shadow-md ${mode === "code" ? "bg-gray-300" : ""
                 }`}
             >
-              <p className="text-blue-500 text-sm">Code</p>
+              <p className="text-indigo-500 text-sm">Code</p>
             </div>
             <div
               onClick={() => setMode("comments")}
-              className={`bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer ${mode === "comments" ? "bg-gray-300" : ""
+              className={`bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer transition-transform duration-100 hover:scale-102 shadow-md ${mode === "comments" ? "bg-gray-300" : ""
                 }`}
             >
-              <p className="text-blue-500 text-sm">Comments</p>
+              <p className="text-indigo-500 text-sm">Comments</p>
             </div>
             <div
               onClick={() => setMode("other")}
-              className={`bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer ${mode === "comments" ? "bg-gray-300" : ""
+              className={`bg-white inline-flex px-[5%] py-[0.5%] rounded-md cursor-pointer transition-transform duration-100 hover:scale-102 shadow-md ${mode === "comments" ? "bg-gray-300" : ""
                 }`}
             >
-              <p className="text-blue-500 text-sm">Other</p>
+              <p className="text-indigo-500 text-sm">Other</p>
             </div>
           </div>
 
@@ -211,7 +214,7 @@ const PostCode = ({ post, author }) => {
           {/* Buttons to show only when state is code*/}
           <div className={`p-0 flex flex-row items-center gap-[5%] w-full ${mode !== "code" ? "hidden" : ""}`}>
             <button
-              className="px-3 py-0.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+              className="px-3 py-0.5 bg-indigo-500 text-white rounded-md hover:bg-blue-600 transition"
               onClick={() =>
                 setCurrentIndex((prev) =>
                   prev === 0 ? files.length - 1 : prev - 1
@@ -221,7 +224,7 @@ const PostCode = ({ post, author }) => {
               Previous
             </button>
             <button
-              className="px-3 py-0.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+              className="px-3 py-0.5 bg-indigo-500 text-white rounded-md hover:bg-blue-600 transition"
               onClick={() =>
                 setCurrentIndex((prev) =>
                   prev === files.length - 1 ? 0 : prev + 1
@@ -235,6 +238,12 @@ const PostCode = ({ post, author }) => {
               <p className="text-white">File Name: {files[currentIndex]?.name}</p>
             </div>
           </div>
+
+          {/* Show favorite button only when mode is NOT code */}
+          <div className={`bg-transparent flex-0.5 w-full rounded-m flex justify-start ${mode === "code" ? "hidden" : ""}`}>
+            <FavoriteButton postId={post._id} onFavorite={favorite} token={token} />
+          </div>
+
         </div>
 
         {/* Images Section */}

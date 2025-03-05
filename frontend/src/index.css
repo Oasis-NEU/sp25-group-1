@@ -64,5 +64,5 @@ button {
 }
 
 .postTitleColor {
-  background-color: #334871;
+  background: linear-gradient(to right, #334871, #3b3c93);
 }

@@ -8,6 +8,7 @@ import SignIn from './pages/SignIn';
 import Post from './pages/Post';
 import CreatePost from './pages/CreatePost';
 import Profile from './pages/Profile';
+import Favorites from './pages/favorites';
 
 const App = () => {
     return (
@@ -20,6 +21,7 @@ const App = () => {
                 <Route path="/post/:postId" element={<Post />} />
                 <Route path="/create-post" element={<CreatePost />} />
                 <Route path="/profile/:userId" element={<Profile />} />
+                <Route path="/favorites" element={<Favorites />} />
             </Routes>
         </div>
     )
