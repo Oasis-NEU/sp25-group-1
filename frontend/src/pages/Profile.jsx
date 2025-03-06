@@ -1,10 +1,8 @@
-import PostMainPage from "../components/PostMainPage";
 import { useContext, useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { Context } from "../context/context";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import axios from "axios";
+import FollowButton from "../components/FollowButton";
 
 const Profile = () => {
   const { userId } = useParams();
@@ -102,17 +100,22 @@ const Profile = () => {
             />
           </div>
 
+          {/* Follow Button */}
+          <div className="w-full flex flex-col items-center justify-center px-[10%]">
+            <FollowButton otherId={userId} />
+
+            <div className="w-full px-3 py-0.5 mt-[5%] followColor text-white font-bold rounded-lg inline-flex items-center justify-center text-sm cursor-pointer transition-transform duration-100 hover:scale-102 shadow-md">
+              Message Me!
+            </div>
+          </div>
+
           <div>
             <div className="text-white text-sm font-bold flex flex-col items-center justify-center bg-indigo-500">
               <p>{profile.user_name}</p>
             </div>
 
-            <div className="text-white text-sm font-bold flex flex-col items-center justify-center bg-indigo-500">
+            <div className="text-white text-sm font-bold flex flex-col items-center justify-center bg-indigo-500 rounded-b-lg">
               <p>{profile.email}</p>
-            </div>
-
-            <div className="text-white text-sm font-bold flex flex-col items-center justify-center bg-indigo-500 cursor-pointer mt-[5%] rounded-b-lg">
-              <p>Message Me</p>
             </div>
           </div>
         </div>

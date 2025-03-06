@@ -135,8 +135,33 @@ const ContextProvider = (props) => {
         }
     };
 
+    const follow = async (otherId) => {
+        if (!token) {
+            toast.error("You must be logged in to follow!");
+            return;
+        }
+
+        try {
+            const response = await axios.post(`${backendUrl}/api/user/follow`, {
+                target_id: otherId,
+                token
+            });
+
+            console.log(response)
+
+            if (response.data.success) {
+                toast.success(response.data.message)
+            } else {
+                toast.error(response.data.error);
+            }
+            
+        } catch (error) {
+            console.error("Error following:", error);
+        }
+    };
+
     // "Export" all the values
-    const value = { posts, backendUrl, token, setToken, userInfo, userId, updatePostReaction, favorite};
+    const value = { posts, backendUrl, token, setToken, userInfo, userId, updatePostReaction, favorite, follow};
 
     return (<Context.Provider value={value}>
         {props.children}

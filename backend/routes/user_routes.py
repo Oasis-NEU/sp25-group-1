@@ -3,7 +3,7 @@ from flask import request, jsonify, session, request, redirect, url_for
 from config import db
 from models import * 
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import create_access_token, jwt_required, decode_token
 from flask import Blueprint
 import random
 import string
@@ -266,3 +266,121 @@ def get_user_favorites():
     ]
 
     return jsonify({"favorites": favorite_posts_json, "success": True, "status": 200})
+
+
+"""
+POST: /api/user/follow
+{
+    "target_id": ""  # ID of the user to follow
+}
+
+Allows a user to follow another user.
+Updates the 'following' list of the current user and the 'followers' list of the target user.
+Returns success message.
+"""
+@user_bp.route('/follow', methods=["POST"])
+def follow_user():
+    try:
+        data = request.json
+
+        if not data:
+            return jsonify({"error": "Invalid JSON", "success": False, "status": 400})
+
+        try:
+            token = data["token"]
+            user_id = decode_token(data["token"]).get('sub')
+        except Exception:
+            return jsonify({"error": "Error decoding token!", "success": False, "status": 400})
+
+        target_id = data["target_id"]
+
+        if user_id == target_id:
+            return jsonify({"error": "You cannot follow yourself", "success": False, "status": 400})
+
+        try:
+            user_objId = ObjectId(user_id)
+            target_objId = ObjectId(target_id)
+        except Exception:
+            return jsonify({"error": "Invalid user ID format", "success": False, "status": 400})
+
+        # Fetch users from the database
+        user = User.objects(id=user_objId).first()
+        target_user = User.objects(id=target_objId).first()
+
+        if not user or not target_user:
+            return jsonify({"error": "User not found", "success": False, "status": 404})
+        
+        if not user.following:
+            user.following = []
+
+        if not target_user.followers:
+            target_user.following = []
+
+        # Check if already following
+        if target_id in user.following:
+            return jsonify({"error": "Already following this user", "success": False, "status": 400})
+
+        # Update following and followers lists
+        user.following.append(target_id)
+        target_user.followers.append(user_id)
+
+        user.save()
+        target_user.save()
+
+        return jsonify({"message": "User followed successfully", "success": True, "status": 200})
+
+    except Exception as e:
+        return jsonify({"error": str(e), "success": False, "status": 500})
+
+"""
+POST: /api/user/getFollowingInfo
+{
+    "userId": ""  # ID of this user
+}
+
+Gets the infomation of all accounts this user is following
+Returns success, message, and data
+ONLY RETURNS THE PROFILE, USERNAME, ID (MODIFY IF EVER NEED MORE INFO)
+"""
+@user_bp.route('/getFollowingInfo', methods=["POST"])
+def following_user_info():
+    if request.headers.get('Content-Type') != 'application/json':
+        return jsonify({"error": "Content-Type must be application/json", "success": False, "status": 400})
+
+    data = request.json
+    if not data:
+        return jsonify({"error": "Invalid JSON", "success": False, "status": 400})
+
+    user_id = data.get("userId")
+    if not user_id:
+        return jsonify({"error": "User ID is required", "success": False, "status": 400})
+
+    try:
+        objId = ObjectId(user_id)
+    except (errors.InvalidId, TypeError):
+        return jsonify({"error": "Invalid user ID format", "success": False, "status": 400})
+
+    user = db.users.find_one({"_id": objId})
+    if user is None:
+        return jsonify({"error": "User not found", "success": False, "status": 404})
+
+    try:
+        follow_obj_ids = []
+        for followingId in user['following']:
+            follow_obj_ids.append(ObjectId(followingId))
+    except Exception as e:
+        return jsonify({"error": f"Invalid user ID in following: {e}", "success": False, "status": 400})
+
+    following_user = User.objects(id__in=follow_obj_ids)
+
+    # Users to JSON
+    following_user_json = [
+        {
+            "id": str(user.id),
+            "profile_picture": user.profile_picture,
+            "user_name": user.user_name
+        }
+        for user in following_user
+    ]
+
+    return jsonify({"following": following_user_json, "success": True, "status": 200})

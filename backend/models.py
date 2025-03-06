@@ -39,6 +39,9 @@ class User(me.Document):
     looking_for_collab = me.StringField(choices=["Yes", "No", "Contact Me"])
     bio = me.StringField()
     location = me.StringField()
+    
+    following = me.ListField(me.StringField())
+    followers = me.ListField(me.StringField())
 
     created_at = me.DateTimeField()
     updated_at = me.DateTimeField()
@@ -56,6 +59,10 @@ class User(me.Document):
             "interests": self.interests,
             "availability": self.availability,
             "looking_for_collab": self.looking_for_collab,
+            "bio": self.bio,
+            "location": self.bio,
+            "following": self.following,
+            "followers": self.followers,
             "settings": self.settings,
             "profile_picture": self.profile_picture,
             "favorites": self.favorites,

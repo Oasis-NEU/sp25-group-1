@@ -1,4 +1,5 @@
 import Sidecard from "../components/Sidecard"
+import FollowingCard from "../components/FollowingCard"
 import RightSideCard from "../components/RightSideCard"
 import PostMainPage from "../components/PostMainPage"
 import { useContext, useEffect, useState } from "react"
@@ -42,8 +43,13 @@ const Home = () => {
   return (
     <div className="min-h-screen flex">
       {/* Put the left profile sidecard on the left 20% of the screen*/}
-      <div className="w-[20%] h-screen top-[10%] sticky transition-transform duration-100 hover:scale-101">
-        <Sidecard />
+      <div className="w-[20%] h-screen top-[10%] sticky">
+        <div className="transition-transform duration-100 hover:scale-101">
+          <Sidecard />
+        </div>
+        <div className="transition-transform duration-100 hover:scale-101">
+          <FollowingCard />
+        </div>
       </div>
 
       {/* Infinite scroll setup to display the posts (50% of the screen with 5% margin on both sides)*/}

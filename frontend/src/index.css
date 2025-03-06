@@ -68,3 +68,7 @@ button {
 .postTitleColor {
   background: linear-gradient(to right, #334871, #3b3c93);
 }
+
+.followColor {
+  background: linear-gradient(to right, #bc4e9c, #f80759);
+}

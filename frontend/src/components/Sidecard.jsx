@@ -10,10 +10,10 @@ const Sidecard = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="p-[9.5%] cursor-pointer shadow-md" onClick={() => navigate(`/profile/${userId}`)}>
+    <div className="p-[9.5%] cursor-pointer" onClick={() => navigate(`/profile/${userId}`)}>
       {/* Displays important user information like name, username, profile picture, and post number*/}
       {/* Displays guest information otherwise */}
-      <div className="navbarColor rounded-lg">
+      <div className="navbarColor rounded-lg shadow-md">
         <div className="text-white text-xl font-bold flex flex-col items-center justify-center">
           <p className="mt-[10%] mb-[5%]">{userInfo ? `${userInfo.first_name} ${userInfo.last_name}` : "Guest User"}</p>
         </div>
