@@ -29,8 +29,6 @@ const FollowingCard = () => {
         fetchFollowingInfo();
     }, [token, backendUrl, userId])
 
-    console.log(token) // Test
-
     // If the user is not logged in
     if (!userId || loadingUsers) {
         return (
