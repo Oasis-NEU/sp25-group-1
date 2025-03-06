@@ -3,8 +3,8 @@ import { useContext, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Context } from "../context/context";
-import enterIcon from "../assets/enterIcon.png";
 import fields from "../assets/fields";
+import CheckIcon from '@mui/icons-material/Check';
 
 const SignIn = () => {
   // Create Navigate Instance
@@ -128,8 +128,8 @@ const SignIn = () => {
                 className="w-full outline-none"
               ></input>
               {/* Submit Button Inside the Password Field */}
-              <button type="submit" className="cursor-pointer w-[7%]">
-                <img src={enterIcon} alt="submit" className="w-full" />
+              <button type="submit" className="cursor-pointer w-[5%]">
+                <CheckIcon />
               </button>
             </div>
             {/* Forgot Password/Switch State/Submit */}
