@@ -1,15 +1,18 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import CommentSection from "./CommentSection";
 import { Context } from "../context/context";
 import FavoriteButton from "../components/FavoriteButton";
 import { useNavigate } from "react-router-dom";
 import BackButton from "./BackButton";
+import EditPost from "./EditPost";
 
 const PostDesigner = ({ post, author }) => {
   const [extraImages, setExtraImages] = useState(post.images?.slice(1) || []);
   const [currentImage, setCurrentImage] = useState(post.images?.[0] || "");
+  const [editMode, setEditMode] = useState(false); // EDIT MODE ONLY FOR AUTHOR
+  const [isEditable, setIsEditable] = useState(false); // IS THIS EDITABLE BY THIS USER
   const [mode, setMode] = useState("description");
-  const { favorite, token } = useContext(Context);
+  const { favorite, token, userId } = useContext(Context);
   const navigate = useNavigate();
 
   // Function to handle clicking side images
@@ -20,8 +23,26 @@ const PostDesigner = ({ post, author }) => {
     setExtraImages(newExtraImages);
   };
 
+  useEffect(() => {
+    if (author?.id === userId) {
+      setIsEditable(true);
+    } else {
+      setIsEditable(false);
+    }
+  }, [author, userId]);
+
   return (
     <div className="backgroundBlue flex items-center justify-center h-screen">
+
+      {/* Edit Mode Overlay */}
+      {editMode && (
+        <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50">
+          <div className="flex items-center justify-center">
+            <EditPost post={post} setEditMode={setEditMode} />
+          </div>
+        </div>
+      )}
+
       {/* Main Box for Post */}
       <div className="navbarColor flex w-[90%] h-[85%] rounded-2xl p-[3%]">
         {/* Images Section */}
@@ -148,6 +169,15 @@ const PostDesigner = ({ post, author }) => {
           <div className="bg-transparent flex-0.5 w-full rounded-m flex justify-end gap-[1%]">
             <FavoriteButton postId={post._id} onFavorite={favorite} token={token} />
             <BackButton />
+            {isEditable ?
+              (
+                <div className="followColor px-3 py-0.5 text-white font-semibold rounded-lg text-sm cursor-pointer transition:transform duration-100 hover:scale-105" onClick={() => setEditMode(true)}>
+                  Edit
+                </div>
+              ) : (
+                <></>
+              )
+            }
           </div>
         </div>
       </div>

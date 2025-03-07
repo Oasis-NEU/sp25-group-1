@@ -204,9 +204,12 @@ def get_profile_information():
 
         if profile:
             # Remove certain fields from the profile
-            exclude = ["_id", "password", "updated_at", "favorites", "settings"]
+            exclude = ["_id", "password", "updated_at", "settings"]
             for field in exclude:
                 profile.pop(field, None)
+
+            # Re-add the id as a string
+            profile["id"] = data.get("profileId")
 
             return jsonify({"message":"Fetched profile successfully", "success":True, "profile":profile, "status":200})
         else:
@@ -318,16 +321,19 @@ def follow_user():
 
         # Check if already following
         if target_id in user.following:
-            return jsonify({"error": "Already following this user", "success": False, "status": 400})
-
+            user.following.remove(target_id)
+            target_user.followers.remove(user_id)
+            action = "unfollowed"
+        else:
         # Update following and followers lists
-        user.following.append(target_id)
-        target_user.followers.append(user_id)
+            user.following.append(target_id)
+            target_user.followers.append(user_id)
+            action = "followed"
 
         user.save()
         target_user.save()
 
-        return jsonify({"message": "User followed successfully", "success": True, "status": 200})
+        return jsonify({"message": f"User {action} successfully", "success": True, "status": 200})
 
     except Exception as e:
         return jsonify({"error": str(e), "success": False, "status": 500})

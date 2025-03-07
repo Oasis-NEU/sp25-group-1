@@ -51,8 +51,6 @@ const Favorites = () => {
     );
   }
 
-  console.log(posts)
-
   return (
     <div className="max-h-screen backgroundBlue flex justify-center overflow-y-scroll p-[2%]">
       {posts.length === 0 ? (

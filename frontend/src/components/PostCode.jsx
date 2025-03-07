@@ -6,6 +6,7 @@ import FavoriteButton from "../components/FavoriteButton";
 import { Context } from "../context/context";
 import { useNavigate } from "react-router-dom";
 import BackButton from "./BackButton";
+import EditPost from "./EditPost";
 
 const PostCode = ({ post, author }) => {
   const [mode, setMode] = useState("description");
@@ -13,13 +14,15 @@ const PostCode = ({ post, author }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentImage, setCurrentImage] = useState(post.images?.[0] || "");
   const [extraImages, setExtraImages] = useState(post.images?.slice(1) || []);
-  const { favorite, token } = useContext(Context);
+  const { favorite, token, userId } = useContext(Context);
   const navigate = useNavigate();
+
+  const [editMode, setEditMode] = useState(false); // EDIT MODE ONLY FOR AUTHOR
+  const [isEditable, setIsEditable] = useState(false); // IS THIS EDITABLE BY THIS USER
 
   useEffect(() => {
     if (post.files && post.files.length > 0) {
       const fetchedFiles = post.files.map((fileObj) => {
-        console.log((fileObj))
         const { filename, file_url: url } = fileObj;
         return {
           name: filename,
@@ -47,6 +50,14 @@ const PostCode = ({ post, author }) => {
       });
     }
   }, [post.files]);
+
+  useEffect(() => {
+    if (author?.id === userId) {
+      setIsEditable(true);
+    } else {
+      setIsEditable(false);
+    }
+  }, [author, userId]);
 
 
   const detectLanguage = (filename) => {
@@ -88,6 +99,16 @@ const PostCode = ({ post, author }) => {
 
   return (
     <div className="backgroundBlue flex items-center justify-center h-screen">
+
+      {/* Edit Mode Overlay */}
+      {editMode && (
+        <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50">
+          <div className="flex items-center justify-center">
+            <EditPost post={post} setEditMode={setEditMode} />
+          </div>
+        </div>
+      )}
+
       {/* Main Box for Post */}
       <div className="navbarColor flex w-[90%] h-[85%] rounded-2xl p-[3%]">
         {/* Container for Post Information */}
@@ -230,6 +251,15 @@ const PostCode = ({ post, author }) => {
           <div className={`bg-transparent flex-0.5 w-full rounded-m flex justify-start gap-[1%] ${mode === "code" ? "hidden" : ""}`}>
             <BackButton />
             <FavoriteButton postId={post._id} onFavorite={favorite} token={token} />
+            {isEditable ?
+              (
+                <div className="followColor px-3 py-0.5 text-white font-semibold rounded-lg text-sm cursor-pointer transition:transform duration-100 hover:scale-105" onClick={() => setEditMode(true)}>
+                  Edit
+                </div>
+              ) : (
+                <></>
+              )
+            }
           </div>
 
         </div>

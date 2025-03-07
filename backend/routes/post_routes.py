@@ -158,6 +158,109 @@ def create_post():
     except Exception as e:
         return jsonify({"error": str(e), "success": False, "status": 500})
 
+"""
+PUT: /api/posts/updatePost
+{
+    "title": ""
+    "content": ""
+    "images": ["", ""] # Optional
+    "files": ["", ""] # Optional
+    "looking_for": ["designer", "programmer", "none"]
+    "post_type": ["designer", "programmer"]
+    "skills_used": ["", ""] # Optional
+    "preferred_experience": ["N/A", "Beginner", "Intermediate", "Expert"]
+    "project_type": "" #SEE LIST IN MODELS.PY
+    "id":""
+    "token":""
+}
+
+Edits a post in the database
+Returns success message
+"""
+@post_bp.route('/updatePost', methods=["PUT"])
+def update_post():
+    try:
+        # Ensure request contains form data
+        if not request.form:
+            return jsonify({"error": "Missing form data", "success": False, "status": 400})
+
+        # Validate user authentication
+        token = request.form.get("token") or request.json.get("token")
+        if not token:
+            return jsonify({"error": "Login Again", "success": False, "status": 401}), 401
+
+        user_id = decode_token(token).get('sub')
+        user = User.objects(id=user_id).first()
+        if not user:
+            return jsonify({"error": "User not found", "success": False, "status": 404})
+
+        postId = request.form.get("id")
+        if not postId:
+            return jsonify({"error": "Post ID not found", "success": False, "status": 400})
+
+        # Find the post
+        post = Post.objects(id=postId).first()
+        if not post:
+            return jsonify({"error": "Post not found", "success": False, "status": 404})
+
+        # Ensure only the author can edit the post
+        if str(post.author.id) != str(user.id):
+            return jsonify({"error": "Unauthorized action, not author", "success": False, "status": 403})
+
+        # Update text fields if provided
+        post.title = request.form.get('title', post.title)
+        post.content = request.form.get('content', post.content)
+        post.looking_for = request.form.get('looking_for', post.looking_for)
+        post.skills_used = request.form.getlist("skills_used") or post.skills_used
+        post.preferred_experience = request.form.get('preferred_experience', post.preferred_experience)
+        post.project_type = request.form.get('project_type', post.project_type)
+        post.post_type = request.form.get("post_type", post.post_type)
+
+        # Handle image updates
+        uploaded_images = post.images if post.images else []
+        if 'images' in request.files:
+            files = request.files.getlist('images')
+            if len(files) > 5:
+                return jsonify({"error": "Maximum 5 images allowed per post", "success": False, "status": 400})
+            for file in files:
+                if file and file.filename:
+                    file.seek(0)
+                    file_size = len(file.read())
+                    file.seek(0)
+                    if file_size > 5 * 1024 * 1024:
+                        return jsonify({"error": f"File {file.filename} exceeds 5MB limit", "success": False, "status": 400})
+                    upload_result = cloudinary.uploader.upload(file)
+                    uploaded_images.append(upload_result['secure_url'])
+        post.images = uploaded_images
+
+        # Handle file updates
+        uploaded_files = post.files if post.files else []
+        if 'files' in request.files:
+            files = request.files.getlist('files')
+            if len(files) > 5:
+                return jsonify({"error": "Maximum 5 files allowed per post", "success": False, "status": 400})
+            for file in files:
+                if file and file.filename:
+                    file.seek(0)
+                    file_size = len(file.read())
+                    file.seek(0)
+                    if file_size > 5 * 1024 * 1024:
+                        return jsonify({"error": f"File {file.filename} exceeds 5MB limit", "success": False, "status": 400})
+                    upload_result = cloudinary.uploader.upload(file, resource_type="raw")
+                    uploaded_files.append({"filename": file.filename, "file_url": upload_result['secure_url']})
+        post.files = uploaded_files
+
+        # Update the timestamp
+        post.updated_at = datetime.datetime.now()
+
+        # Save the updated post
+        post.save()
+
+        return jsonify({"message": "Post Updated Successfully", "success": True, "status": 200})
+
+    except Exception as e:
+        return jsonify({"error": str(e), "success": False, "status": 500})
+
 
 """
 POST: /api/posts/react

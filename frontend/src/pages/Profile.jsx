@@ -6,7 +6,7 @@ import FollowButton from "../components/FollowButton";
 
 const Profile = () => {
   const { userId } = useParams();
-  const { backendUrl } = useContext(Context);
+  const { backendUrl, userInfo } = useContext(Context);
   const navigate = useNavigate();
 
   const [profile, setProfile] = useState(null);
@@ -102,7 +102,7 @@ const Profile = () => {
 
           {/* Follow Button */}
           <div className="w-full flex flex-col items-center justify-center px-[10%]">
-            <FollowButton otherId={userId} />
+            <FollowButton otherId={userId}/>
 
             <div className="w-full px-3 py-0.5 mt-[5%] followColor text-white font-bold rounded-lg inline-flex items-center justify-center text-sm cursor-pointer transition-transform duration-100 hover:scale-102 shadow-md">
               Message Me!
