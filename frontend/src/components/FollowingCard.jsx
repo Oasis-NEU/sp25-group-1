@@ -32,12 +32,12 @@ const FollowingCard = () => {
     // If the user is not logged in
     if (!userId || loadingUsers) {
         return (
-            <div className="p-[9.5%] cursor-pointer shadow-md">
-                <div className="navbarColor rounded-lg flex flex-col items-center">
+            <div className="p-[9.5%] cursor-pointer">
+                <div className="navbarColor rounded-lg flex flex-col items-center shadow-md">
                     <div className="text-white text-xl font-bold flex flex-col items-center justify-center">
                         <p className="mt-[10%] mb-[5%]">Following</p>
                     </div>
-                    <p className="text-sm text-white mb-[5%]">${!userId ? "Not Logged In!": "Loading following..."}</p>
+                    <p className="text-sm text-white mb-[5%]">{!userId ? "Not Logged In!": "Loading following..."}</p>
                 </div>
             </div>
         );
