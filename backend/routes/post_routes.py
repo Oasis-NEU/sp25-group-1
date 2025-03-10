@@ -24,12 +24,11 @@ MAX_FILES = 5
 /api/posts/trending             
 /api/posts/likePost             DONE
 /api/posts/unlikePost           DONE
-/api/posts/deletePost           DONE
-/api/posts/updatePost           
-/api/posts/getComments          tbd
-/api/posts/makeComment          tbd
-/api/posts/getPostsByUser
-/api/posts/reportPost
+/api/posts/deletePost           
+/api/posts/updatePost           DONE
+/api/posts/getComments          DONE
+/api/posts/makeComment          DONE
+/api/posts/getPostsByUser       DONE
 """
 
 """
@@ -144,8 +143,8 @@ def create_post():
             comments=[],
             likes=0,
             likedBy=[],
-            created_at=datetime.datetime.now(),
-            updated_at=datetime.datetime.now(),
+            created_at=datetime.now(),
+            updated_at=datetime.now(),
             post_type=request.form.get("post_type")
         )
         post.save()
@@ -187,7 +186,7 @@ def update_post():
         # Validate user authentication
         token = request.form.get("token") or request.json.get("token")
         if not token:
-            return jsonify({"error": "Login Again", "success": False, "status": 401}), 401
+            return jsonify({"error": "Login Again", "success": False, "status": 401})
 
         user_id = decode_token(token).get('sub')
         user = User.objects(id=user_id).first()
@@ -251,7 +250,7 @@ def update_post():
         post.files = uploaded_files
 
         # Update the timestamp
-        post.updated_at = datetime.datetime.now()
+        post.updated_at = datetime.now()
 
         # Save the updated post
         post.save()
@@ -323,31 +322,39 @@ def react():
 """
 POST: /api/posts/deletePost
 {
-    "post_id":""
-    "user_id":""
+    "post_Id":""
+    "token":""
 }
 
 Deletes the post from database
 Returns success message
 """
 @post_bp.route('/deletePost', methods=["POST"])
-@jwt_required()
 def delete_post():
     try:
-        user_id = get_jwt_identity()
-
         data = request.json
         if not data:
             return jsonify({"error": "Invalid JSON", "success":False, "status":400})
 
-        post_id = data["post_id"]
+        token = data["token"]
+        if not token:
+            return jsonify({"error": "Login Again", "success": False, "status": 401})
+
+        user_id = decode_token(token).get('sub')
+        user = User.objects(id=user_id).first()
+        if not user:
+            return jsonify({"error": "User not found", "success": False, "status": 404})
+
+        post_id = data["post_Id"]
         post = Post.objects(id=post_id).first()
         if not post:
             return jsonify({"error": "Post not found", "success": False, "status": 404})
         
         if str(post.author.id) != str(user_id):
             return jsonify({"error": "Unauthorized: You can only delete your own posts", "success": False, "status": 403})
-        
+
+        user.posts.remove(post_id)
+        user.save()
         post.delete()
 
         return jsonify({"message": "Post deleted successfully", "success": True, "status": 200})

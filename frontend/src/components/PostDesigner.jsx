@@ -5,6 +5,7 @@ import FavoriteButton from "../components/FavoriteButton";
 import { useNavigate } from "react-router-dom";
 import BackButton from "./BackButton";
 import EditPost from "./EditPost";
+import DeleteButton from "./DeleteButton";
 
 const PostDesigner = ({ post, author }) => {
   const [extraImages, setExtraImages] = useState(post.images?.slice(1) || []);
@@ -169,6 +170,7 @@ const PostDesigner = ({ post, author }) => {
           <div className="bg-transparent flex-0.5 w-full rounded-m flex justify-end gap-[1%]">
             <FavoriteButton postId={post._id} onFavorite={favorite} token={token} />
             <BackButton />
+            <DeleteButton postId={post._id} postAuthorId={author?.id}/>
             {isEditable ?
               (
                 <div className="followColor px-3 py-0.5 text-white font-semibold rounded-lg text-sm cursor-pointer transition:transform duration-100 hover:scale-105" onClick={() => setEditMode(true)}>

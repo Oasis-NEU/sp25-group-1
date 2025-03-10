@@ -1,7 +1,7 @@
 # Imports
 import mongoengine as me
 from config import db
-import datetime
+from datetime import datetime
 
 # User model
 class User(me.Document):
@@ -160,3 +160,38 @@ class Post(me.Document):
     meta = {
         "collection": "posts"
     }
+
+# SingleMessage model (Embedded)
+class SingleMessage(me.EmbeddedDocument):
+    creator = me.ReferenceField(User, required=True)
+    recipient = me.ReferenceField(User, required=True)
+    text = me.StringField(required=True)
+    created_at = me.DateTimeField()
+
+    def to_json(self):
+        return {
+            "creator": str(self.creator.id) if self.creator else None,
+            "recipient": str(self.recipient.id) if self.recipient else None,
+            "text": self.text,
+            "created_at": self.created_at
+        }
+
+# Chat between 2 users model
+class Chat(me.Document):
+    participants = me.ListField(me.ReferenceField(User), required=True, max_length=2)
+    messages = me.EmbeddedDocumentListField(SingleMessage)
+    last_updated = me.DateTimeField()
+
+    def add_message(self, creator, recipient, text):
+        message = SingleMessage(creator=creator, recipient=recipient, text=text, created_at=datetime.utcnow())
+        self.messages.append(message)
+        self.last_updated = datetime.utcnow()
+        self.save()
+
+    def to_json(self):
+        return {
+            "chat_id": str(self.id),
+            "participants": [str(user.id) for user in self.participants],
+            "messages": [msg.to_json() for msg in self.messages],
+            "last_updated": self.last_updated.isoformat() if self.last_updated else datetime.utcnow().isoformat()
+        }

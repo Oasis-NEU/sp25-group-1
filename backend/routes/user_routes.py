@@ -18,19 +18,18 @@ user_bp = Blueprint('user', __name__, url_prefix="/api/user")
 bcrypt = Bcrypt()
 
 """
-/api/user/login
-/api/user/create
-/api/user/getInfo
+/api/user/login                    DONE
+/api/user/create                   DONE
+/api/user/getInfo                  DONE
 /api/user/updateProfile
-/api/user/getFavorites
+/api/user/getFavorites             DONE
 /api/user/changeSettings
 /api/user/deleteAccount
-/api/user/saveToFavorite
+/api/user/saveToFavorite           DONE
 /api/user/forgotPassword
 /api/user/verifyEmail
-/api/user/follow
-/api/user/unfollow
-/api/user/getFollowers
+/api/user/follow                   DONE
+/api/user/getFollowers             DONE
 """
 
 """
@@ -254,19 +253,22 @@ def get_user_favorites():
         for postId in user['favorites']:
             fav_obj_ids.append(ObjectId(postId))
     except Exception as e:
-        return jsonify({"error": f"Invalid user ID in favorites: {e}", "success": False, "status": 400})
+        return jsonify({"error": f"Invalid post ID in favorites: {e}", "success": False, "status": 400})
 
     favorite_posts = Post.objects(id__in=fav_obj_ids)
 
     # Posts to JSON
-    favorite_posts_json = [
-        {
-            "id": str(post.id),
-            "title": post.title,
-            "images": post.images
-        }
-        for post in favorite_posts
-    ]
+
+    favorite_posts_json = []
+    for post in favorite_posts:
+        try:
+            favorite_posts_json.append({
+                "id": str(post.id),
+                "title": post.title,
+                "images": post.images
+            })
+        except Exception as e:
+            continue
 
     return jsonify({"favorites": favorite_posts_json, "success": True, "status": 200})
 

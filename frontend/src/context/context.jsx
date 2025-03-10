@@ -135,6 +135,26 @@ const ContextProvider = (props) => {
         }
     };
 
+    const createChat = async (otherId) => {
+        if (!userId) {
+            toast.error("You must be logged in to message!");
+            return;
+        }
+
+        try {
+            const response = await axios.post(`${backendUrl}/api/chat/createChat`, {
+                user1_id: userId,
+                user2_id: otherId,
+            });
+
+            console.log(response)
+            
+        } catch (error) {
+            console.error("Error creating chat!:", error);
+            toast.error("Error creating chat!");
+        }
+    };
+
     const follow = async (otherId) => {
         if (!token) {
             toast.error("You must be logged in to follow!");
@@ -161,7 +181,7 @@ const ContextProvider = (props) => {
     };
 
     // "Export" all the values
-    const value = { posts, backendUrl, token, setToken, userInfo, userId, updatePostReaction, favorite, follow};
+    const value = { posts, backendUrl, token, setToken, userInfo, userId, updatePostReaction, favorite, follow, createChat};
 
     return (<Context.Provider value={value}>
         {props.children}

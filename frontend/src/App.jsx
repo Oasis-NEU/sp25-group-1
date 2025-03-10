@@ -9,6 +9,7 @@ import Post from './pages/Post';
 import CreatePost from './pages/CreatePost';
 import Profile from './pages/Profile';
 import Favorites from './pages/favorites';
+import Inbox from './pages/Inbox';
 
 const App = () => {
     return (
@@ -22,6 +23,7 @@ const App = () => {
                 <Route path="/create-post" element={<CreatePost />} />
                 <Route path="/profile/:userId" element={<Profile />} />
                 <Route path="/favorites" element={<Favorites />} />
+                <Route path="/inbox" element={<Inbox />} />
             </Routes>
         </div>
     )

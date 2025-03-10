@@ -7,6 +7,7 @@ import { Context } from "../context/context";
 import { useNavigate } from "react-router-dom";
 import BackButton from "./BackButton";
 import EditPost from "./EditPost";
+import DeleteButton from "./DeleteButton";
 
 const PostCode = ({ post, author }) => {
   const [mode, setMode] = useState("description");
@@ -251,6 +252,7 @@ const PostCode = ({ post, author }) => {
           <div className={`bg-transparent flex-0.5 w-full rounded-m flex justify-start gap-[1%] ${mode === "code" ? "hidden" : ""}`}>
             <BackButton />
             <FavoriteButton postId={post._id} onFavorite={favorite} token={token} />
+            <DeleteButton postId={post._id} postAuthorId={author?.id}/>
             {isEditable ?
               (
                 <div className="followColor px-3 py-0.5 text-white font-semibold rounded-lg text-sm cursor-pointer transition:transform duration-100 hover:scale-105" onClick={() => setEditMode(true)}>

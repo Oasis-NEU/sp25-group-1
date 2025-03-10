@@ -3,10 +3,11 @@ import { Context } from "../context/context";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import FollowButton from "../components/FollowButton";
+import MessageButton from "../components/MessageButton";
 
 const Profile = () => {
   const { userId } = useParams();
-  const { backendUrl, userInfo } = useContext(Context);
+  const { backendUrl } = useContext(Context);
   const navigate = useNavigate();
 
   const [profile, setProfile] = useState(null);
@@ -80,8 +81,6 @@ const Profile = () => {
     );
   }
 
-  console.log(posts)
-
   return (
     <div className="max-h-screen backgroundBlue flex justify-center p-[2%]">
       <div className="flex flex-col w-[20%] gap-[5vh]">
@@ -102,11 +101,8 @@ const Profile = () => {
 
           {/* Follow Button */}
           <div className="w-full flex flex-col items-center justify-center px-[10%]">
-            <FollowButton otherId={userId}/>
-
-            <div className="w-full px-3 py-0.5 mt-[5%] followColor text-white font-bold rounded-lg inline-flex items-center justify-center text-sm cursor-pointer transition-transform duration-100 hover:scale-102 shadow-md">
-              Message Me!
-            </div>
+            <FollowButton otherId={userId} />
+            <MessageButton otherId={userId} />
           </div>
 
           <div>

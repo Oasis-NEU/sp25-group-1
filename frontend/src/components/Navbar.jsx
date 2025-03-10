@@ -29,6 +29,11 @@ const Navbar = () => {
         <NavLink to='/favorites' className={({ isActive }) => `transition:all hover:scale-105 hover:text-indigo-500 ${isActive ? "text-indigo-500 font-bold" : ""}`}>
           <p>Favorites</p>
         </NavLink>
+
+
+        <NavLink to='/inbox' className={({ isActive }) => `transition:all hover:scale-105 hover:text-indigo-500 ${isActive ? "text-indigo-500 font-bold" : ""}`}>
+          <p>Inbox</p>
+        </NavLink>
       </ul>
     </div>
   )

@@ -18,9 +18,11 @@ jwt= JWTManager(app)
 # Blueprints
 from routes.post_routes import post_bp
 from routes.user_routes import user_bp
+from routes.chat_routes import chat_bp
 
 app.register_blueprint(post_bp)
 app.register_blueprint(user_bp)
+app.register_blueprint(chat_bp)
 
 # End Blueprints
 
