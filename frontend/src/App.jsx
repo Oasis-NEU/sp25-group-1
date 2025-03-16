@@ -8,8 +8,9 @@ import SignIn from './pages/SignIn';
 import Post from './pages/Post';
 import CreatePost from './pages/CreatePost';
 import Profile from './pages/Profile';
-import Favorites from './pages/favorites';
+import Favorites from './pages/Favorites';
 import Inbox from './pages/Inbox';
+import Recommended from './pages/Recommended';
 
 const App = () => {
     return (
@@ -24,6 +25,7 @@ const App = () => {
                 <Route path="/profile/:userId" element={<Profile />} />
                 <Route path="/favorites" element={<Favorites />} />
                 <Route path="/inbox" element={<Inbox />} />
+                <Route path="/recommended" element={<Recommended />} />
             </Routes>
         </div>
     )
