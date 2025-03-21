@@ -6,10 +6,7 @@ from config import db
 
 match_bp = Blueprint('match', __name__, url_prefix='/api/match')
 
-def calculate_match_score(candidate, desired_role, desired_experience, desired_skills, desired_availability):
-
-    print(f"\nCalculating match score for candidate: {candidate.get('_id')}, role: {candidate.get('role').lower()}")
-    
+def calculate_match_score(candidate, desired_role, desired_experience, desired_skills, desired_availability):    
     # Subject to change the chance values
     weight_experience = 0.35
     weight_skills = 0.35
@@ -20,17 +17,11 @@ def calculate_match_score(candidate, desired_role, desired_experience, desired_s
     desired_exp = exp_map.get(desired_experience, 1)    
     candidate_exp = exp_map.get(candidate.get("experience_level"), 1)
 
-    print(f"Desired Exp: {desired_exp}, Candidate Exp: {candidate_exp}")
-    
     # the closer the experience level, the higher the exp_score
     exp_score = 1 - (abs(desired_exp - candidate_exp) / 2.0)
 
-    print(f"Experience Score: {exp_score}")
-
     # skills calculation
     candidate_skills = {skill.lower() for skill in candidate.get("skills", [])}
-
-    print(f"Candidate Skills: {candidate_skills}, Desired Skills: {desired_skills}")
 
     if desired_skills:
         intersection = desired_skills.intersection(candidate_skills)
@@ -38,9 +29,7 @@ def calculate_match_score(candidate, desired_role, desired_experience, desired_s
         skills_score = len(intersection) / len(union) if len(union) > 0 else 0
     else:
         skills_score = 0.5
-
-    print(f"Skills Score: {skills_score}")
-
+        
     # Availability similarity table
     availability_similarity = {
         "Full-time": {"Full-time": 1.0, "Hybrid": 0.8, "Remote": 0.7, "Part-time": 0.4, "Freelance": 0.3,
@@ -75,14 +64,10 @@ def calculate_match_score(candidate, desired_role, desired_experience, desired_s
     else:
         availability_score = 0.5
 
-    print(f"Availability Score: {availability_score}")
-
     # Final match score calculation
     match_score = (weight_experience * exp_score) + \
                   (weight_skills * skills_score) + \
                   (weight_availability * availability_score)
-
-    print(f"Final Match Score: {match_score * 100}")
 
     return match_score * 100
 
@@ -104,36 +89,22 @@ Returns top 3 matching user profiles based on desired criteria.
 @match_bp.route('/match', methods=["POST"])
 def match_users():
     try:
-        
-        print("\nReceived a request to /api/match")
-
         # Retrieving information from the json
         data = request.json
-
-        print(f"Request Data: {data}")
-
         desired_role = data.get('role').lower()
         desired_experience = data.get('experience')
         desired_skills = {skill.strip().lower() for skill in data.get('skills', "").split(',')}
         desired_availability = data.get('availability')
-
-        print(f"Filtering candidates for role: {desired_role}, experience: {desired_experience}, skills: {desired_skills}, availability: {desired_availability}")
         
         # Gets all users but the current one and filters those users based on desired role
         candidates = list(db.users.find({}))
-
-        print(f"Total candidates found: {len(candidates)}")
-
         filtered_candidates = []
         for user in candidates:
             if user.get("role") == desired_role:
                 filtered_candidates.append(user)
 
-        print(f"Candidates matching role '{desired_role}': {len(filtered_candidates)}")
-
         matches = []
         for candidate in filtered_candidates:
-            print(f"\nProcessing candidate ID: {candidate.get('_id')}")
             match_score = calculate_match_score(candidate, desired_role, desired_experience, 
                                                                             desired_skills, desired_availability)
             
@@ -148,12 +119,9 @@ def match_users():
                 'match_score': int(match_score)
             })
         
-        print(f"Total matches found: {len(matches)}")
         matches.sort(key=lambda match: match['match_score'], reverse=True)
 
         top_matches = matches[:10]
-        print(f"Top {len(top_matches)} matches: {top_matches}")
         return jsonify({"matches": top_matches, "success": True, "status": 200})
     except Exception as e:
-        print("Error in /api/match:", traceback.format_exc())  
         return jsonify({"error": str(e), "success": False, "status":500})

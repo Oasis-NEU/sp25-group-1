@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import BackButton from "../components/BackButton";
 
 const UserResults = () => {
-    const [result, setResult] = useState();
+    const [result, setResult] = useState([]);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
 
@@ -12,18 +13,21 @@ const UserResults = () => {
 
         if (resultsData) {
             try {
+                setLoading(true)
                 const parsedData = JSON.parse(resultsData);
                 setResult(parsedData || []);
             } catch (error) {
                 console.error("Error parsing match results:", error);
                 setResult([]);
+            } finally {
+                setLoading(false);
             }
         } else {
             setResult([]);
         }
     }, []);
 
-    if (!result) {
+    if (loading) {
         return (
             <div className="backgroundBlue flex items-center justify-center h-screen">
                 <p className="text-white text-xl">Loading Results...</p>
