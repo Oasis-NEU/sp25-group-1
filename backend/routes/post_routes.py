@@ -563,3 +563,54 @@ def add_to_favorite():
     user.save()
 
     return jsonify({"message": message, "success": True, "status": 200})
+
+
+"""
+GET: /api/posts/trending
+Fetches all posts from the database, calculates a trending score based on likes, 
+comments, and recency, and returns the top 10 trending posts as a JSON response.
+"""
+@post_bp.route('/trending', methods=["GET"])
+def get_trending_posts():
+    try:
+        collection = db.posts
+        now = datetime.now(timezone.utc)
+
+        # Fetch all posts
+        posts = list(collection.find({}))
+
+        # Compute trending score
+        for post in posts:
+            likes = post.get("likes", 0)
+            if "comments" in post and post["comments"]:
+                comments_count = len(post["comments"])
+            else:
+                comments_count = 0
+
+            
+            recency = (now - post.get("created_at", now)).total_seconds() / (60 * 60 * 24) 
+            # Normalize recency (newer posts should have a higher score)
+            if recency > 0:
+                recency_score = 1 / (1 + recency)
+            else:
+                recency_score = 1
+
+            # Compute weighted trending score
+            post["trending_score"] = (0.45 * likes) + (0.35 * comments_count) + (0.2 * recency_score)
+
+        # Sort by trending score in descending order
+        trending_posts = sorted(posts, key=lambda x: x["trending_score"], reverse=True)[:10]
+
+        # Convert ObjectId and user references to strings
+        for post in trending_posts:
+            post["_id"] = str(post["_id"])
+            if "author" in post:
+                post["author"] = str(post["author"])
+            if "comments" in post:
+                for comment in post["comments"]:
+                    if "user" in comment:
+                        comment["user"] = str(comment["user"])
+
+        return jsonify({"trending_posts": trending_posts, "success": True, "status": 200})
+    except Exception as e:
+        return jsonify({"error": str(e), "success": False, "status": 500})
