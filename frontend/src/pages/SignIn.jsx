@@ -106,7 +106,7 @@ const SignIn = () => {
             className="w-[90%] h-[90%] bg-[#131E34] rounded-lg flex flex-col items-center"
           >
             <div className="postTitleColor rounded-lg flex w-[50%] h-[10%] mt-[10%] justify-center items-center">
-              <p className="text-white text-xl">Sign In</p>
+              <p className="text-white text-xl font-bold">Sign In</p>
             </div>
             {/* Email Input */}
             <input
@@ -166,7 +166,7 @@ const SignIn = () => {
           >
             {/* Page Title */}
             <div className="postTitleColor rounded-lg flex w-[50%] h-[10%] mt-[3%] justify-center items-center">
-              <p className="text-white text-xl">Create Account</p>
+              <p className="text-white text-xl font-bold">Create Account</p>
             </div>
             {/* Names Input */}
             <div className="flex flex-row w-[80%] h-[6%] mt-[3%] gap-x-3">

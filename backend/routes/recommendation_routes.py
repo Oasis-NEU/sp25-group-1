@@ -2,10 +2,14 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import User 
 import datetime
+from config import db
 
 match_bp = Blueprint('match', __name__, url_prefix='/api/match')
 
-def calculate_match_score(candidate, desired_role, desired_experience, desired_skills,  desired_interests, desired_availability):
+def calculate_match_score(candidate, desired_role, desired_experience, desired_skills, desired_availability):
+
+    print(f"\nCalculating match score for candidate: {candidate.get('_id')}, role: {candidate.get('role').lower()}")
+    
     # Subject to change the chance values
     weight_experience = 0.35
     weight_skills = 0.35
@@ -13,21 +17,29 @@ def calculate_match_score(candidate, desired_role, desired_experience, desired_s
     
     # map experience level to numbers
     exp_map = {"Beginner": 1, "Intermediate": 2, "Expert": 3}
-    desired_exp = exp_map.get(desired_experience)    
-    candidate_exp = exp_map.get(candidate.experience_level)
+    desired_exp = exp_map.get(desired_experience, 1)    
+    candidate_exp = exp_map.get(candidate.get("experience_level"), 1)
+
+    print(f"Desired Exp: {desired_exp}, Candidate Exp: {candidate_exp}")
     
     # the closer the experience level, the higher the exp_score
     exp_score = 1 - (abs(desired_exp - candidate_exp) / 2.0)
 
+    print(f"Experience Score: {exp_score}")
+
     # skills calculation
-    candidate_skills = set(candidate.skills)
+    candidate_skills = {skill.lower() for skill in candidate.get("skills", [])}
+
+    print(f"Candidate Skills: {candidate_skills}, Desired Skills: {desired_skills}")
+
     if desired_skills:
         intersection = desired_skills.intersection(candidate_skills)
         union = desired_skills.union(candidate_skills)
-        skills_score = len(intersection) / len(union)
+        skills_score = len(intersection) / len(union) if len(union) > 0 else 0
     else:
-        skills_score = 0.5 
+        skills_score = 0.5
 
+    print(f"Skills Score: {skills_score}")
 
     # Availability similarity table
     availability_similarity = {
@@ -58,14 +70,19 @@ def calculate_match_score(candidate, desired_role, desired_experience, desired_s
     }
 
     if desired_availability:
-        availability_score = availability_similarity.get(desired_availability, {}).get(candidate.availability, 0)
+        candidate_availability = candidate.get("availability", "")
+        availability_score = availability_similarity.get(desired_availability, {}).get(candidate_availability, 0)
     else:
         availability_score = 0.5
+
+    print(f"Availability Score: {availability_score}")
 
     # Final match score calculation
     match_score = (weight_experience * exp_score) + \
                   (weight_skills * skills_score) + \
                   (weight_availability * availability_score)
+
+    print(f"Final Match Score: {match_score * 100}")
 
     return match_score * 100
 
@@ -77,7 +94,6 @@ POST: /api/match
     "role": "designer" | "developer",
     "experience": "Beginner" | "Intermediate" | "Expert",
     "skills": "skill1, skill2, skill3",
-    "interests": "interest1, interest2, interest3",
     "availability": "Full-time" | "Part-time" | "Freelance" | "Collaborative" | 
                     "Contract-Based" | "Mentorship" | "Casual" | "Internship" |
                     "Remote" | "Hybrid" | "Volunteer" | "No Availability"
@@ -86,47 +102,58 @@ POST: /api/match
 Returns top 3 matching user profiles based on desired criteria.
 """
 @match_bp.route('/match', methods=["POST"])
-@jwt_required()
 def match_users():
-
-    current_user_id = get_jwt_identity()
-
-
-    # Retrieving information from the json
-    data = request.json
-    desired_role = data.get('role')
-    desired_experience = data.get('experience')
-    desired_skills = set(map(str.strip, data.get('skills', "").split(',')))
-    desired_availability = data.get('availability')
-    
-    # Gets all users but the current one and filters those users based on desired role
-    candidates = User.query.filter(User.id != current_user_id).all()
-    filtered_candidates = []
-    for user in candidates:
-        if user.role == desired_role:
-            filtered_candidates.append(user)
-
-    matches = []
-    for candidate in filtered_candidates:
-        match_score = match_score = match_score = calculate_match_score(candidate, desired_role, desired_experience, 
-                                                                        desired_skills, desired_availability)
+    try:
         
-        matches.append({
-            'userid': candidate.id,  
-            'profile_picture': candidate.profile_picture,
-            'role': candidate.role,
-            'skills': candidate.skills,
-            'experience_level': candidate.experience_level,
-            'availability': candidate.availability,
-            'match_score': match_score
-        })
-    
-    matches.sort(key=lambda match: match['match_score'], reverse=True)
+        print("\nReceived a request to /api/match")
 
-    top_matches = matches[:10]
-    
-    return jsonify(top_matches)
+        # Retrieving information from the json
+        data = request.json
 
+        print(f"Request Data: {data}")
 
+        desired_role = data.get('role').lower()
+        desired_experience = data.get('experience')
+        desired_skills = {skill.strip().lower() for skill in data.get('skills', "").split(',')}
+        desired_availability = data.get('availability')
 
-    
+        print(f"Filtering candidates for role: {desired_role}, experience: {desired_experience}, skills: {desired_skills}, availability: {desired_availability}")
+        
+        # Gets all users but the current one and filters those users based on desired role
+        candidates = list(db.users.find({}))
+
+        print(f"Total candidates found: {len(candidates)}")
+
+        filtered_candidates = []
+        for user in candidates:
+            if user.get("role") == desired_role:
+                filtered_candidates.append(user)
+
+        print(f"Candidates matching role '{desired_role}': {len(filtered_candidates)}")
+
+        matches = []
+        for candidate in filtered_candidates:
+            print(f"\nProcessing candidate ID: {candidate.get('_id')}")
+            match_score = calculate_match_score(candidate, desired_role, desired_experience, 
+                                                                            desired_skills, desired_availability)
+            
+            matches.append({
+                'userId': str(candidate["_id"]),
+                'user_name': candidate.get("user_name", ""),
+                'profile_picture': candidate.get("profile_picture", ""),
+                'role': candidate.get("role", ""),
+                'skills': candidate.get("skills", []),
+                'experience_level': candidate.get("experience_level", ""),
+                'availability': candidate.get("availability", ""),
+                'match_score': int(match_score)
+            })
+        
+        print(f"Total matches found: {len(matches)}")
+        matches.sort(key=lambda match: match['match_score'], reverse=True)
+
+        top_matches = matches[:10]
+        print(f"Top {len(top_matches)} matches: {top_matches}")
+        return jsonify({"matches": top_matches, "success": True, "status": 200})
+    except Exception as e:
+        print("Error in /api/match:", traceback.format_exc())  
+        return jsonify({"error": str(e), "success": False, "status":500})

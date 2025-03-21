@@ -5,7 +5,7 @@ import { Context } from "../context/context"
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { userId } = useContext(Context);
+  const { userId, token } = useContext(Context);
 
   return (
     <div className='py-[3vh] flex items-center justify-between font-medium navbarColor w-full sticky top-0 z-50'>
@@ -18,9 +18,15 @@ const Navbar = () => {
           <p>Home</p>
         </NavLink>
 
-        <NavLink to='/sign-in' className={({ isActive }) => `transition:all hover:scale-105 hover:text-indigo-500 ${isActive ? "text-indigo-500 font-bold" : ""}`}>
-          <p>Login</p>
-        </NavLink>
+        {!(token && userId) ? (
+          <NavLink to='/sign-in' className={({ isActive }) => `transition:all hover:scale-105 hover:text-indigo-500 ${isActive ? "text-indigo-500 font-bold" : ""}`}>
+            <p>Login</p>
+          </NavLink>
+        ) : (
+          <NavLink to='/edit' className={({ isActive }) => `transition:all hover:scale-105 hover:text-indigo-500 ${isActive ? "text-indigo-500 font-bold" : ""}`}>
+            <p>Edit</p>
+          </NavLink>
+        )}
 
         <NavLink to={`/profile/${userId}`} className={({ isActive }) => `transition:all hover:scale-105 hover:text-indigo-500 ${isActive ? "text-indigo-500 font-bold" : ""}`}>
           <p>Profile</p>

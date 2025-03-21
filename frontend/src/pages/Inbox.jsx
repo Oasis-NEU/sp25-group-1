@@ -77,6 +77,15 @@ const Inbox = () => {
         }
     };
 
+    // If no profile, return
+    if (!userId) {
+        return (
+            <div className="backgroundBlue flex items-center justify-center h-screen">
+                <p className="text-white text-xl">Sign In to Message</p>
+            </div>
+        );
+    }
+
     // If profile is still loading, show a loader
     if (loadingChat) {
         return (

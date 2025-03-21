@@ -129,8 +129,8 @@ def create_user():
             looking_for_collab = data.get('looking_for_collab'),
             bio = "",
             location = data.get('location'),
-            created_at = datetime.datetime.now(),
-            updated_at = datetime.datetime.now()
+            created_at = datetime.now(),
+            updated_at = datetime.now()
             )
         user.save()
 
@@ -392,3 +392,60 @@ def following_user_info():
     ]
 
     return jsonify({"following": following_user_json, "success": True, "status": 200})
+
+
+"""
+POST: /api/user/edit
+
+{
+    "first_name": ""
+    "last_name": ""
+    "role": ""
+    "skills": []
+    "experience_level": "Beginner" | "Intermediate" | "Expert"
+    "interests": []
+    "availability": "" SEE FULL LIST IN MODELS.PY
+    "looking_for_collab": "Yes" | "No" | "Contact Me"
+    "location": ""
+}
+
+Creates edits the user in the database
+"""
+@user_bp.route("/edit", methods=["POST"])
+def edit_user():
+    # Check to see if content-type is json
+    if request.headers['Content-Type'] != 'application/json':
+        return jsonify({"error": "Content-Type must be application/json", "success":False, "status":400})
+    
+    #Sets data from request
+    data = request.json
+    if not data:
+        return jsonify({"error": "Invalid JSON", "success":False, "status":400})
+
+    print(data)
+    
+    try:
+        user_id = data["user_id"]
+        user = User.objects(id=user_id).first()
+
+        if not user:
+            return jsonify({"error": "User not found", "success": False, "status": 404})
+
+        #Edit user using data
+        user.first_name = data.get('first_name')
+        user.last_name = data.get('last_name')
+        user.role = data.get('role')
+        user.skills = data.get('skills')
+        user.experience_level = data.get('experience_level')
+        user.interests = data.get('interests')
+        user.availability = data.get('availability')
+        user.looking_for_collab = data.get('looking_for_collab')
+        user.bio = data.get("bio")
+        user.location = data.get('location')
+        user.updated_at = datetime.now()
+
+        user.save()
+
+        return jsonify({"message":"User Edit Successful", "success":True, "status":200})
+    except Exception as e:
+        return jsonify({"error": str(e), "status":500})

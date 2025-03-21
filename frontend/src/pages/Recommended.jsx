@@ -4,12 +4,12 @@ import { Context } from "../context/context";
 import axios from "axios";
 import fields from "../assets/fields.js";
 
-const CreatePost = () => {
-    // Set states for post information to be created
+const Recommended = () => {
+    // Set states
     const [lookingFor, setLookingFor] = useState("Designer");
     const [skills, setSkills] = useState("");
-    const [availability, setAvailability] = useState("");
-    const [preferredExperience, setPreferredExperience] = useState("N/A");
+    const [availability, setAvailability] = useState("Full-time");
+    const [preferredExperience, setPreferredExperience] = useState("Beginner");
 
     // Backend url and token to verify login
     const { backendUrl, token } = useContext(Context)
@@ -27,29 +27,21 @@ const CreatePost = () => {
         // Set loader and try to call the create endpoint based on given infomation
         setSendLoading(true);
         try {
-            // Set up multipart/form data
-            const formData = new FormData();
-            formData.append("looking_for", lookingFor);
-            formData.append("availability", availability);
-            formData.append("preferred_experience", preferredExperience);
-            
-            // Individually send the skills
-            skills.split(",").filter(skill => skill.trim() !== "").forEach((skill) => formData.append("skills_used", skill));
-
-            // Axios call to create post
-            const response = await axios.post(`${backendUrl}/api/posts/createPost`,
-                formData,
+            const response = await axios.post(`${backendUrl}/api/match/match`,
                 {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                    withCredentials: true,
+                    role: lookingFor,
+                    availability: availability,
+                    experience: preferredExperience,
+                    skills: skills,
                 }
             );
 
+            console.log(response)
+
             if (response.data.success) {
                 toast.success("Successful Recommendation!");
-                window.location.href = "/";
+                localStorage.setItem("matchResults", JSON.stringify(response.data.matches || []));
+                window.location.href = "/results";
             } else {
                 toast.error(response.data.error);
             }
@@ -63,7 +55,7 @@ const CreatePost = () => {
 
     return (
         <div className="backgroundBlue w-screen h-screen flex items-center justify-center">
-            <div className="navbarColor flex flex-col w-[50%] h-[50%] rounded-2xl p-[3%] items-center justify-center">
+            <div className="navbarColor flex flex-col w-[50%] h-[40%] rounded-2xl p-[3%] items-center justify-center">
                 <div className="postTitleColor w-1/3 rounded-md flex items-center justify-center px-[2%] mb-[5%] font-bold">
                     <p className="text-white text-[175%]">Find Partners</p>
                 </div>
@@ -115,8 +107,8 @@ const CreatePost = () => {
                             </div>
                         </div>
                         {/* Skills Input */}
-                        <div className="flex flex-col items-center">
-                                <label className="text-white font-bold">Skills Used:</label>
+                        <div className="flex flex-col items-center w-[42%] pt-[2%]">
+                                <label className="text-white font-bold">Skills You Want:</label>
                                 <input
                                     type="text"
                                     placeholder="Enter skills (comma separated)"
@@ -141,4 +133,4 @@ const CreatePost = () => {
     );
 };
 
-export default CreatePost;
+export default Recommended;

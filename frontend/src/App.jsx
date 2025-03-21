@@ -10,6 +10,9 @@ import CreatePost from './pages/CreatePost';
 import Profile from './pages/Profile';
 import Favorites from './pages/Favorites';
 import Inbox from './pages/Inbox';
+import SearchResults from './pages/SearchResults';
+import EditProfile from './pages/EditProfile';
+import UserResults from './pages/UserResults';
 import Recommended from './pages/Recommended';
 
 const App = () => {
@@ -25,6 +28,9 @@ const App = () => {
                 <Route path="/profile/:userId" element={<Profile />} />
                 <Route path="/favorites" element={<Favorites />} />
                 <Route path="/inbox" element={<Inbox />} />
+                <Route path="/search/:query" element={<SearchResults />} />
+                <Route path="/edit" element={<EditProfile />} />
+                <Route path="/results" element={<UserResults />} />
                 <Route path="/recommended" element={<Recommended />} />
             </Routes>
         </div>

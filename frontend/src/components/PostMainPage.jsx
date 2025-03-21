@@ -17,7 +17,7 @@ const PostMainPage = ({ title, image, likes: initalLikes, id }) => {
 
       <div className="w-full h-[10%] flex flex-row">
         <div className="postTitleColor w-2/3 rounded-md flex items-center px-[2%]">
-          <p className="text-white text-[175%]">{title}</p>
+          <p className="text-white text-[175%] truncate">{title}</p>
         </div>
 
 
