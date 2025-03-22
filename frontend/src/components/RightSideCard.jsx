@@ -7,9 +7,10 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import EmailIcon from '@mui/icons-material/Email';
 import PeopleIcon from '@mui/icons-material/People';
+import HomeIcon from '@mui/icons-material/Home';
 
 const RightSideCard = () => {
-  const { token, user } = useContext(Context);
+  const { token, trending, setTrending } = useContext(Context);
   const navigate = useNavigate();
 
   return (
@@ -23,9 +24,9 @@ const RightSideCard = () => {
           className="bg-indigo-500 rounded-lg w-[50%] h-[50%] aspect-square cursor-pointer transition-transform duration-100 hover:scale-105 flex items-center justify-center shadow-md">
           <BookmarkIcon className="text-white" />
         </div>
-        <div onClick={() => navigate("/trending")} 
+        <div onClick={() => setTrending(!trending)} 
           className="bg-indigo-500 rounded-lg w-[50%] h-[50%] aspect-square cursor-pointer transition-transform duration-100 hover:scale-105 flex items-center justify-center shadow-md">
-          <TrendingUpIcon className="text-white" />
+          {!trending ? <TrendingUpIcon className="text-white" /> : <HomeIcon className="text-white" /> }
         </div>
         <div onClick={() => navigate("/recommended")} 
           className="bg-indigo-500 rounded-lg w-[50%] h-[50%] aspect-square cursor-pointer transition-transform duration-100 hover:scale-105 flex items-center justify-center shadow-md">

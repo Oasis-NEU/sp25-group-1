@@ -7,6 +7,7 @@ from flask import Blueprint
 import cloudinary
 import cloudinary.uploader
 from bson.objectid import ObjectId, InvalidId
+from datetime import datetime, timezone
 
 # Set up post blueprint at "/api/posts"
 post_bp = Blueprint('posts', __name__, url_prefix="/api/posts")
@@ -582,24 +583,22 @@ def get_trending_posts():
         # Compute trending score
         for post in posts:
             likes = post.get("likes", 0)
-            if "comments" in post and post["comments"]:
-                comments_count = len(post["comments"])
-            else:
-                comments_count = 0
+            comments_count = len(post.get("comments", []))
 
-            
-            recency = (now - post.get("created_at", now)).total_seconds() / (60 * 60 * 24) 
+            created_at = post.get("created_at", now)
+            if created_at.tzinfo is None:
+                created_at = created_at.replace(tzinfo=timezone.utc)
+
+            recency = (now - created_at).total_seconds() / (60 * 60 * 24)
+
             # Normalize recency (newer posts should have a higher score)
-            if recency > 0:
-                recency_score = 1 / (1 + recency)
-            else:
-                recency_score = 1
+            recency_score = 1 / (1 + recency) if recency > 0 else 1
 
             # Compute weighted trending score
             post["trending_score"] = (0.45 * likes) + (0.35 * comments_count) + (0.2 * recency_score)
 
         # Sort by trending score in descending order
-        trending_posts = sorted(posts, key=lambda x: x["trending_score"], reverse=True)[:10]
+        trending_posts = sorted(posts, key=lambda x: x["trending_score"], reverse=True)
 
         # Convert ObjectId and user references to strings
         for post in trending_posts:

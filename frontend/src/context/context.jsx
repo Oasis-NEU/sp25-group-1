@@ -13,6 +13,7 @@ const ContextProvider = (props) => {
     const [token, setToken] = useState(''); // current login token
     const [userInfo, setUserInfo] = useState(undefined); // current user info
     const [userId, setUserId] = useState(undefined); // current userId
+    const [trending, setTrending] = useState(false); // trending toggle
 
     // Gets all posts using the getAllPosts endpoint
     const getPosts = async () => {
@@ -181,7 +182,7 @@ const ContextProvider = (props) => {
     };
 
     // "Export" all the values
-    const value = { posts, backendUrl, token, setToken, userInfo, userId, updatePostReaction, favorite, follow, createChat};
+    const value = { posts, backendUrl, token, setToken, userInfo, userId, updatePostReaction, favorite, follow, createChat, trending, setTrending, setPosts, getPosts};
 
     return (<Context.Provider value={value}>
         {props.children}

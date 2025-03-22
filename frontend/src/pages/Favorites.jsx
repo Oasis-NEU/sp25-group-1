@@ -37,7 +37,7 @@ const Favorites = () => {
   if (!userInfo) {
     return (
       <div className="backgroundBlue flex items-center justify-center h-screen">
-        <p className="text-white text-xl">Profile not found</p>
+        <p className="text-white text-xl">Profile not found, Log in!</p>
       </div>
     );
   }

@@ -6,14 +6,33 @@ import { useContext, useEffect, useState } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { Context } from "../context/context"
 import { useNavigate } from "react-router-dom"
+import axios from "axios"
 
 const Home = () => {
   // Initial states for the infinite scroll
-  const {posts} = useContext(Context);
+  const {posts, trending, backendUrl, setPosts, getPosts} = useContext(Context);
   const [displayedPosts, setDisplayedPosts] = useState([]);
   const [more, setMore] = useState(false);
   const [index, setIndex] = useState(10);
   const navigate = useNavigate();
+
+  // Fetch trending posts when `trending` is true and update posts
+  useEffect(() => {
+    if (trending) {
+      const fetchTrendingPosts = async () => {
+        try {
+          const response = await axios.get(`${backendUrl}/api/posts/trending`);
+          setPosts(response.data.trending_posts); // Update posts with trending posts
+        } catch (error) {
+          console.error("Error fetching trending posts", error);
+        }
+      };
+
+      fetchTrendingPosts();
+    } else {
+      getPosts();
+    }
+  }, [trending, backendUrl, setPosts]);
 
   // Function to get the first 10 posts
   useEffect(() => {
