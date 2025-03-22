@@ -5,6 +5,7 @@ import CommentSection from "./CommentSection";
 import Carousel from "pinar";
 import CodeHighlighter from "react-native-code-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import GradientBox from "./GradientBox";
 
 const DisplayPostContent = ({ post, author }) => {
   const [mode, setMode] = useState("description");
@@ -75,13 +76,11 @@ const DisplayPostContent = ({ post, author }) => {
     <View style={tw`bg-gray-900 flex items-center h-full gap-[2%]`}>
       <View style={tw`bg-gray-800 w-[90%] h-[40%] rounded-2xl p-4 mt-[5%]`}>
         {/* Title */}
-        <View
-          style={tw`bg-[#334871] h-[10%] rounded-md flex-row items-center px-2`}
-        >
-          <Text style={tw`text-white text-xl flex-1`}>
-            {post?.title || "Untitled Post"}
-          </Text>
-        </View>
+        <GradientBox variant="postTitle" style={tw`h-[10%] flex-row items-center px-2`}>
+        <Text style={tw`text-white text-xl flex-1`}>
+          {post?.title || "Untitled Post"}
+        </Text>
+      </GradientBox>
 
         {/* Profile Picture, Looking For, Username */}
         <View style={tw`flex-row items-center mt-2 gap-[2%]`}>
@@ -94,14 +93,14 @@ const DisplayPostContent = ({ post, author }) => {
             style={tw`w-8 h-8 rounded-full`}
           />
           <Text
-            style={tw`px-1 py-1 bg-[#334871] rounded-lg text-white text-sm`}
+            style={tw`px-1 py-1 bg-white rounded-lg text-sm`}
           >
-            {author?.looking_for || "Not specified"}
+            {author && author.user_name ? author.user_name : "Unknown User"}
           </Text>
           <Text
-            style={tw`px-1 py-1 bg-[#334871] rounded-lg text-white text-sm`}
+            style={tw`px-1 py-1 bg-white rounded-lg text-sm`}
           >
-            {author?.username || "Unknown User"}
+            Project Type: {post.project_type}
           </Text>
         </View>
 
@@ -128,7 +127,7 @@ const DisplayPostContent = ({ post, author }) => {
           onPress={() => setMode("description")}
           style={tw`flex-1`}
         >
-          <View style={tw`bg-white px-5 py-1 rounded-md items-center`}>
+          <View style={tw`bg-white px-2 py-1 rounded-md items-center`}>
             <Text style={tw`text-indigo-500 text-sm`}>Description</Text>
           </View>
         </TouchableOpacity>
@@ -136,24 +135,34 @@ const DisplayPostContent = ({ post, author }) => {
           onPress={() => setMode("comments")}
           style={tw`flex-1`}
         >
-          <View style={tw`bg-white px-5 py-1 rounded-md items-center`}>
+          <View style={tw`bg-white px-2 py-1 rounded-md items-center`}>
             <Text style={tw`text-indigo-500 text-sm`}>Comments</Text>
           </View>
         </TouchableOpacity>
         {post?.post_type === "programmer" && (
           <TouchableOpacity onPress={() => setMode("code")} style={tw`flex-1`}>
-            <View style={tw`bg-white px-5 py-1 rounded-md items-center`}>
+            <View style={tw`bg-white px-2 py-1 rounded-md items-center`}>
               <Text style={tw`text-indigo-500 text-sm`}>Code</Text>
             </View>
           </TouchableOpacity>
         )}
+        <TouchableOpacity
+          onPress={() => setMode("comments")}
+          style={tw`flex-1`}
+        >
+          <View style={tw`bg-white px-2 py-1 rounded-md items-center`}>
+            <Text style={tw`text-indigo-500 text-sm`}>Other</Text>
+          </View>
+        </TouchableOpacity>
       </View>
 
       <View style={tw`w-[90%] h-[40%] rounded-2x`}>
         {mode === "description" && (
-          <ScrollView style={tw`bg-[#334871] rounded-md p-3`}>
-            <Text style={tw`text-white text-xl`}>{post?.content}</Text>
-          </ScrollView>
+          <GradientBox variant="postTitle" style={tw`p-3 h-full`}>
+            <ScrollView>
+              <Text style={tw`text-white text-xl`}>{post?.content}</Text>
+            </ScrollView>
+          </GradientBox>
         )}
         {mode === "comments" && <CommentSection />}
         {mode === "code" && (

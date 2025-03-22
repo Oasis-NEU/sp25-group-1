@@ -19,6 +19,7 @@
     "expo": "~52.0.37",
     "expo-document-picker": "^13.0.3",
     "expo-image-picker": "^16.0.6",
+    "expo-linear-gradient": "~14.0.2",
     "expo-status-bar": "~2.0.1",
     "jwt-decode": "^4.0.0",
     "pinar": "^0.12.2",

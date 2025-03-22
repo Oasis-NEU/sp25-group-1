@@ -11,15 +11,11 @@ import ContextProvider from "./context/Context";
 import CreatePost from "./screens/CreatePost";
 import SignIn from "./screens/SignIn";
 import Post from "./screens/Post";
+import ProfileScreen from "./screens/Profile";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
-const Profile = () => (
-  <View style={tw`flex-1 items-center justify-center bg-gray-900`}>
-    <Text style={tw`text-white text-lg`}>Profile Screen</Text>
-  </View>
-);
 
 const HomeStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false, animationDuration: 100}}>
@@ -51,7 +47,7 @@ const App = () => {
           }}
         >
           <Drawer.Screen name="Home" component={HomeStack} />
-          <Drawer.Screen name="Profile" component={Profile} />
+          <Drawer.Screen name="Profile" component={ProfileScreen} />
           <Drawer.Screen name="CreatePost" component={CreatePost} />
           <Drawer.Screen name="SignIn" component={SignIn} />
         </Drawer.Navigator>
