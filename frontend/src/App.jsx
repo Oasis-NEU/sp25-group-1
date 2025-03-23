@@ -1,6 +1,9 @@
 import {Routes, Route} from 'react-router-dom';
 import {ToastContainer, toast} from "react-toastify";
+import { useEffect, useState } from "react";
+import LoadingScreen from "./components/LoadingScreen";
 import "react-toastify/dist/ReactToastify.css";
+import "./index.css"
 
 import Home from './pages/Home';
 import Navbar from './components/Navbar';
@@ -16,8 +19,24 @@ import UserResults from './pages/UserResults';
 import Recommended from './pages/Recommended';
 
 const App = () => {
+    const [loadingDone, setLoadingDone] = useState(false);
+
     return (
-        <div className="w-full min-h-screen backgroundBlue">
+      <div className="relative w-full">
+        {/* Loading screen */}
+        {!loadingDone && (
+          <div className="fixed inset-0 z-50">
+            <LoadingScreen onFinish={() => setLoadingDone(true)} />
+          </div>
+        )}
+  
+        {/* Rest of app */}
+        <div
+          className={`transition-opacity duration-1000 ease-in ${
+            loadingDone ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <div className="w-full min-h-screen backgroundBlue">
             <ToastContainer />
             <Navbar />
             <Routes>
@@ -33,8 +52,10 @@ const App = () => {
                 <Route path="/results" element={<UserResults />} />
                 <Route path="/recommended" element={<Recommended />} />
             </Routes>
+            </div>
         </div>
-    )
+      </div>
+    );
 };
 
 export default App;

@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import Search from './Search'
 import { useNavigate, NavLink } from "react-router-dom";
 import { Context } from "../context/context"
+import logo from "../assets/logo.png";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -9,8 +10,8 @@ const Navbar = () => {
 
   return (
     <div className='py-[3vh] flex items-center justify-between font-medium navbarColor w-full sticky top-0 z-50'>
-      <div className='w-[50%] px-[5%] flex items-center'>
-        <img onClick={() => navigate("/")} src="" alt="logo" className='pr-10' />
+      <div className='w-[50%] px-[2.5%] flex items-center'>
+        <img onClick={() => navigate("/")} src={logo} alt="logo" className='w-45 h-9 pr-10 cursor-pointer' />
         <Search />
       </div>
       <ul className='w-[50%] justify-evenly flex text-lg text-white'>
