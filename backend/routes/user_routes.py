@@ -1,6 +1,6 @@
 # Imports
 from flask import request, jsonify, session, request, redirect, url_for
-from config import db
+from config import db, oauth, frontend_url
 from models import * 
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token, jwt_required, decode_token
@@ -9,6 +9,7 @@ import random
 import string
 from bson.objectid import ObjectId, InvalidId
 from datetime import timedelta
+from urllib.parse import quote
 
 
 # Set up user blueprint at "/api/user"
@@ -449,3 +450,72 @@ def edit_user():
         return jsonify({"message":"User Edit Successful", "success":True, "status":200})
     except Exception as e:
         return jsonify({"error": str(e), "status":500})
+
+"""
+/api/user/google-login
+/api/user/authorize
+
+Google OAuth2.0 login
+Returns a JWT of the user's ID
+"""
+@user_bp.route('/google-login')
+def google_login():
+    redirect_uri = url_for('user.google_auth', _external=True)
+    return oauth.google.authorize_redirect(redirect_uri)
+
+@user_bp.route('/authorize')
+def google_auth():
+    try:
+        token = oauth.google.authorize_access_token()
+        resp = oauth.google.get('https://www.googleapis.com/oauth2/v3/userinfo')
+        user_info = resp.json()
+
+        if not user_info:
+            return jsonify({"error": "Failed to get user info", "success": False, "status": 400})
+
+        email = user_info.get("email")
+        first_name = user_info.get("given_name", "")
+        last_name = user_info.get("family_name", "")
+        user_name = email.split("@")[0]
+        picture = user_info.get("picture", random_profile())
+
+        # Check if user already exists
+        user = User.objects(email=email).first()
+
+        if not user:
+            base_user_name = user_name
+            count = 1
+            while User.objects(user_name=user_name).first():
+                user_name = f"{base_user_name}{count}"
+                count += 1
+
+            user = User(
+                email=email,
+                password="",
+                user_name=user_name,
+                first_name=first_name,
+                last_name=last_name,
+                settings={},
+                profile_picture=picture,
+                favorites=[],
+                posts=[],
+                role="programmer",
+                skills=[],
+                experience_level="Beginner",
+                interests=[],
+                availability="No Availability",
+                looking_for_collab="Contact Me",
+                bio="",
+                location="Remote",
+                following = [],
+                followers = [],
+                created_at=datetime.now(),
+                updated_at=datetime.now()
+            )
+            user.save()
+
+        token = create_access_token(identity=str(user.id), expires_delta=timedelta(hours=2))
+        return redirect(f"{frontend_url}/google-auth-success?token={quote(token)}")
+
+    except Exception as e:
+        return jsonify({"error": str(e), "success": False, "status": 500})

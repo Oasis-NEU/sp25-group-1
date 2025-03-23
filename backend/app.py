@@ -1,12 +1,14 @@
 # Imports
 from flask import Flask
 from flask_cors import CORS
-from config import db, JWT_SECRET_KEY
+from config import db, JWT_SECRET_KEY, init_oauth, oauth
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
+import os
 
 #Set up Flask, CORS and Bcrypt
 app = Flask(__name__)
+app.secret_key = os.getenv("SECRET_KEY")
 CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}},
      allow_headers=["Authorization", "Content-Type"])
 bcrypt = Bcrypt(app)
@@ -14,6 +16,9 @@ bcrypt = Bcrypt(app)
 #Set JWT configuration
 app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
 jwt= JWTManager(app)
+
+#Set google oauth
+init_oauth(app)
 
 # Blueprints
 from routes.post_routes import post_bp

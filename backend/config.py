@@ -7,6 +7,7 @@ import cloudinary.uploader
 import cloudinary.api
 from dotenv import load_dotenv
 from flask_jwt_extended import JWTManager
+from authlib.integrations.flask_client import OAuth
 
 # Load environment variables from .env file
 load_dotenv()
@@ -16,6 +17,27 @@ MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/OasisDatabase")
 
 # JWT Secret Key
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+
+# Create the OAuth object
+oauth = None
+
+# Return frontend URL
+
+frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
+
+def init_oauth(app):
+    global oauth
+    oauth = OAuth(app)
+    oauth.register(
+        name='google',
+        server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+        client_id=os.getenv("GOOGLE_CLIENT_ID"),
+        client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+        client_kwargs={
+            'scope': 'openid email profile'
+        }
+    )
+
 
 # Cloudinary Info
 
