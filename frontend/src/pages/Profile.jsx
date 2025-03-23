@@ -84,7 +84,7 @@ const Profile = () => {
   return (
     <div className="max-h-screen backgroundBlue flex justify-center p-[2%]">
       <div className="flex flex-col w-[20%] gap-[5vh]">
-        <div className="navbarColor w-full min-h-[35vh] flex flex-col justify-between rounded-t-lg rounded-b-xl">
+        <div className="navbarColor w-full min-h-[40vh] flex flex-col justify-between rounded-t-lg rounded-b-xl">
           <div className="text-white text-xl font-bold flex flex-col items-center justify-center pt-[5%]">
             <p className="">{profile ? `${profile.first_name} ${profile.last_name}` : "Guest User"}</p>
           </div>

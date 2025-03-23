@@ -220,40 +220,40 @@ const EditProfile = () => {
                     </div>
 
                     {/* Role Input */}
-                    <div className="flex flex-row w-[80%] mt-[3%] items-center text-white">
-                        <p className="font-bold pr-5 underline underline-offset-8">
-                            Select Role
-                        </p>
-                        <div className="flex flex-row gap-x-2">
-                            {/* programmer option */}
-                            <div
-                                className={`px-3 py-1 rounded-lg cursor-pointer ${role === "programmer" ? "bg-indigo-500" : "bg-gray-500"
-                                    }`}
-                                onClick={() => setRole("programmer")}
-                            >
-                                Developer
-                            </div>
+                    <div className="flex flex-row w-[80%] mt-[3%]  justify-between text-white">
+                        <div className="flex flex-row items-center">
+                            <p className="font-bold pr-5 underline underline-offset-8">
+                                Select Role
+                            </p>
+                            <div className="flex flex-row gap-x-2">
+                                {/* programmer option */}
+                                <div
+                                    className={`px-3 py-1 rounded-lg cursor-pointer ${role === "programmer" ? "bg-indigo-500" : "bg-gray-500"
+                                        }`}
+                                    onClick={() => setRole("programmer")}
+                                >
+                                    Developer
+                                </div>
 
-                            {/* designer option */}
-                            <div
-                                className={`px-3 py-1 rounded-lg cursor-pointer ${role === "designer" ? "bg-indigo-500" : "bg-gray-500"
-                                    }`}
-                                onClick={() => setRole("designer")}
-                            >
-                                Designer
+                                {/* designer option */}
+                                <div
+                                    className={`px-3 py-1 rounded-lg cursor-pointer ${role === "designer" ? "bg-indigo-500" : "bg-gray-500"
+                                        }`}
+                                    onClick={() => setRole("designer")}
+                                >
+                                    Designer
+                                </div>
                             </div>
                         </div>
-                    </div>
 
                     {/* Forgot Password/Submit/Login */}
-                    <div className="flex flex-row justify-end w-[80%]">
-                        <button
-                            type="submit"
-                            onClick={() => onSubmitHandler}
-                            className="postTitleColor rounded-lg px-8 py-2 text-white text-sm cursor-pointer"
-                        >
-                            Edit
-                        </button>
+                    <button
+                        type="submit"
+                        onClick={() => onSubmitHandler}
+                        className="postTitleColor rounded-lg px-8 py-2 text-white text-sm cursor-pointer"
+                    >
+                        Edit
+                    </button>
                     </div>
                 </form>
             </div>
