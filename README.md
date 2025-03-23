@@ -2,7 +2,7 @@
 
 ## Overview  
 **Name:** CoDesign  
-**Contributors:** Aryan Gupta, Abhi Gonthina, Shiven Ajwaliya, Jonas Bleck, Abhinav Tavlidar  
+**Contributors:** Aryan Gupta, Abhinav Gonthina, Shiven Ajwaliya, Jonas Bleck, Abhinav Tavlidar  
 **Objective:**  
 To create a platform that connects designers and developers, enabling them to collaborate on projects seamlessly. CoDesign facilitates profile creation, project posting, chat-based communication, and personalized matchmaking based on skills, interests, and availability. Additionally, CoDesign offers a mobile-friendly experience and scalable backend to support growing users.
 
