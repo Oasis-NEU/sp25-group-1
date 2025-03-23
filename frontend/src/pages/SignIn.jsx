@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Context } from "../context/context";
 import fields from "../assets/fields";
-import CheckIcon from '@mui/icons-material/Check';
+import GoogleIcon from '@mui/icons-material/Google';
 
 const SignIn = () => {
   // Create Navigate Instance
@@ -24,6 +24,7 @@ const SignIn = () => {
   const [availability, setAvailability] = useState("No Availability");
   const [colab, setColab] = useState("No");
   const [location, setLocation] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const { token, setToken, backendUrl } = useContext(Context);
 
@@ -49,14 +50,14 @@ const SignIn = () => {
       } else if (currentState === "Create") {
 
         const formattedSkills = skills
-        .split(",")
-        .map(skill => skill.trim())
-        .filter(skill => skill !== "");
+          .split(",")
+          .map(skill => skill.trim())
+          .filter(skill => skill !== "");
 
         const formattedInterests = interests
-        .split(",")
-        .map(skill => skill.trim())
-        .filter(skill => skill !== "");
+          .split(",")
+          .map(skill => skill.trim())
+          .filter(skill => skill !== "");
 
         const response = await axios.post(`${backendUrl}/api/user/create`, {
           first_name,
@@ -120,17 +121,20 @@ const SignIn = () => {
             {/* Password Input */}
             <div className="bg-white flex justify-between items-center rounded-lg px-[2%] w-[80%] h-[8%] mt-[2%] outline-none">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
                 required
                 className="w-full outline-none"
-              ></input>
-              {/* Submit Button Inside the Password Field */}
-              <button type="submit" className="cursor-pointer w-[5%]">
-                <CheckIcon />
-              </button>
+              />
+              {/* Show/Hide Toggle */}
+              <span
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="ml-2 cursor-pointer text-sm text-indigo-500 font-semibold"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </span>
             </div>
             {/* Forgot Password/Switch State/Submit */}
             <div className="flex flex-row justify-between w-[80%] mt-[2%]">
@@ -150,13 +154,27 @@ const SignIn = () => {
                 Continue
               </button>
             </div>
+
             {/* Switch to create account */}
-            <div className="p-1.5 bg-indigo-500 rounded-lg mt-[8%] cursor-pointer">
-              <p
-                className="text-white text-sm"
-                onClick={() => setCurrentState("Create")}>
-                New? Create your account
-              </p>
+            <div className="flex flex-row  mt-[8%] gap-[2%] w-[80%] justify-center">
+              {/* Google Button */}
+              <div className="p-1.5 bg-white rounded-lg cursor-pointer flex items-center gap-2">
+                <GoogleIcon />
+                <p
+                  className="font-semibold text-sm"
+                  onClick={() => window.location.href = `${backendUrl}/api/user/google-login`}>
+                  Sign in with Google
+                </p>
+              </div>
+
+              {/* Create Account Button */}
+              <div className="p-1.5 bg-indigo-500 rounded-lg cursor-pointer">
+                <p
+                  className="text-white text-sm"
+                  onClick={() => setCurrentState("Create")}>
+                  New? Create your account
+                </p>
+              </div>
             </div>
           </form>
         ) : (
@@ -168,8 +186,22 @@ const SignIn = () => {
             <div className="postTitleColor rounded-lg flex w-[50%] h-[10%] mt-[3%] justify-center items-center">
               <p className="text-white text-xl font-bold">Create Account</p>
             </div>
+
+            {/* Forgot Password/Submit/Login */}
+            <div className="flex justify-center items-center w-[80%] my-[2%]">
+              {/* Google Button */}
+              <div className="p-1.5 bg-white rounded-lg cursor-pointer flex items-center gap-2">
+                <GoogleIcon />
+                <p
+                  className="font-semibold text-sm"
+                  onClick={() => window.location.href = `${backendUrl}/api/user/google-login`}>
+                  Sign in with Google
+                </p>
+              </div>
+            </div>
+
             {/* Names Input */}
-            <div className="flex flex-row w-[80%] h-[6%] mt-[3%] gap-x-3">
+            <div className="flex flex-row w-[80%] h-[6%] gap-x-3">
               <input
                 type="name"
                 placeholder="First Name"

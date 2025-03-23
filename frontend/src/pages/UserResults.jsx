@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom";
 import BackButton from "../components/BackButton";
+import LoadingScreen from "./LoadingScreen";
 
 const UserResults = () => {
     const [result, setResult] = useState([]);
@@ -29,9 +30,7 @@ const UserResults = () => {
 
     if (loading) {
         return (
-            <div className="backgroundBlue flex items-center justify-center h-screen">
-                <p className="text-white text-xl">Loading Results...</p>
-            </div>
+            <LoadingScreen />
         );
     }
 

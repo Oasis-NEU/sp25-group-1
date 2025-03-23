@@ -20,8 +20,15 @@ const Sidecard = () => {
         <div className="text-white text-sm font-bold flex flex-col items-center justify-center mb-[7%]">
           <p className="px-[10%] bg-indigo-500 rounded-lg">{userInfo ? `${userInfo.role}` : "Guest User"}</p>
         </div>
-        <div className="px-[25%] pb-[10%]">
-          <img className="rounded-full border-2 border-indigo-500" src={userInfo?.profile_picture || "https://upload.wikimedia.org/wikipedia/commons/2/21/Solid_black.svg"} alt="profile picture" />
+        <div className="flex justify-center pb-[10%] px-[25%]">
+          <img
+            className="rounded-full border-2 border-indigo-500 aspect-square w-full h-full object-cover"
+            src={
+              userInfo?.profile_picture ||
+              "https://upload.wikimedia.org/wikipedia/commons/2/21/Solid_black.svg"
+            }
+            alt="profile picture"
+          />
         </div>
         <div className="text-white text-sm font-bold flex flex-col items-center justify-center rounded-b-lg bg-indigo-500">
           <p>{userInfo ? `${userInfo.posts.length} posts` : "No Posts Yet"}</p>

@@ -3,6 +3,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
 import { Context } from "../context/context";
 import { toast } from "react-toastify";
+import LoadingScreen from "../pages/LoadingScreen";
 
 const CommentSection = ({ postId }) => {
     const [comments, setComments] = useState([]);
@@ -83,7 +84,7 @@ const CommentSection = ({ postId }) => {
                             value={comment}
                             placeholder="Comment..."
                             onChange={(e) => setComment(e.target.value)}
-                            className="flex-grow border border-gray-300 rounded-md px-2 py-1 outline-none"
+                            className="flex-grow rounded-md px-2 py-1 outline-none"
                         />
                         <button
                             onClick={async () => {

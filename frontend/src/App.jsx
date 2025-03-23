@@ -17,6 +17,7 @@ import SearchResults from './pages/SearchResults';
 import EditProfile from './pages/EditProfile';
 import UserResults from './pages/UserResults';
 import Recommended from './pages/Recommended';
+import GoogleAuthSuccess from './pages/GoogleAuthSuccess.jsx';
 
 const App = () => {
     const [loadingDone, setLoadingDone] = useState(false);
@@ -51,6 +52,7 @@ const App = () => {
                 <Route path="/edit" element={<EditProfile />} />
                 <Route path="/results" element={<UserResults />} />
                 <Route path="/recommended" element={<Recommended />} />
+                <Route path="/google-auth-success" element={<GoogleAuthSuccess />} />
             </Routes>
             </div>
         </div>

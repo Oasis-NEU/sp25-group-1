@@ -4,6 +4,7 @@ import { Context } from "../context/context";
 import PostDesigner from "../components/PostDesigner";
 import PostCode from "../components/PostCode";
 import axios from "axios";
+import LoadingScreen from "./LoadingScreen";
 
 const Post = () => {
   // Gets the post id from the url
@@ -47,9 +48,7 @@ const Post = () => {
   // If the posts or author does not exist yet, set a loader
   if ((!post && posts.length === 0) || loadingAuthor) {
     return (
-      <div className="backgroundBlue flex items-center justify-center h-screen">
-        <p className="text-white text-xl">Loading post...</p>
-      </div>
+      <LoadingScreen />
     );
   }
 

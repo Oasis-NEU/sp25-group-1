@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import BackButton from "../components/BackButton";
 import axios from "axios";
 import { Context } from "../context/context";
+import LoadingScreen from "./LoadingScreen";
 
 const SearchResults = () => {
     const { query } = useParams();
@@ -42,9 +43,7 @@ const SearchResults = () => {
 
     if (loading) {
         return (
-            <div className="backgroundBlue flex items-center justify-center h-screen">
-                <p className="text-white text-xl">Loading Results...</p>
-            </div>
+            <LoadingScreen />
         );
     }
 

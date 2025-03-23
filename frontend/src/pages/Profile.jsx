@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import FollowButton from "../components/FollowButton";
 import MessageButton from "../components/MessageButton";
+import LoadingScreen from "./LoadingScreen";
 
 const Profile = () => {
   const { userId } = useParams();
@@ -57,27 +58,21 @@ const Profile = () => {
   // If profile is still loading, show a loader
   if (loadingProfile) {
     return (
-      <div className="backgroundBlue flex items-center justify-center h-screen">
-        <p className="text-white text-xl">Loading profile...</p>
-      </div>
+      <LoadingScreen />
     );
   }
 
   // If the profile does not exist, show an error message
   if (!profile) {
     return (
-      <div className="backgroundBlue flex items-center justify-center h-screen">
-        <p className="text-white text-xl">Profile not found</p>
-      </div>
+      <LoadingScreen />
     );
   }
 
   // If posts are still loading after profile is loaded, show a loader
   if (loadingPosts) {
     return (
-      <div className="backgroundBlue flex items-center justify-center h-screen">
-        <p className="text-white text-xl">Loading posts...</p>
-      </div>
+      <LoadingScreen />
     );
   }
 
@@ -93,7 +88,7 @@ const Profile = () => {
           </div>
           <div className="flex items-center justify-center">
             <img
-              className="rounded-full border-2 border-indigo-500 w-[40%] object-cover"
+              className="rounded-full border-2 border-indigo-500 w-[40%] object-cover aspect-square"
               src={profile?.profile_picture || "https://upload.wikimedia.org/wikipedia/commons/2/21/Solid_black.svg"}
               alt="profile picture"
             />

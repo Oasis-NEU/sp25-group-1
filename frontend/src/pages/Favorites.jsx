@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Context } from "../context/context";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import LoadingScreen from "./LoadingScreen";
 
 const Favorites = () => {
   const { backendUrl, userId, userInfo } = useContext(Context);
@@ -45,9 +46,7 @@ const Favorites = () => {
   // If posts are still loading after profile is loaded, show a loader
   if (loadingPosts) {
     return (
-      <div className="backgroundBlue flex items-center justify-center h-screen">
-        <p className="text-white text-xl">Loading posts...</p>
-      </div>
+      <LoadingScreen />
     );
   }
 

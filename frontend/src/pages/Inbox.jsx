@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { Context } from "../context/context";
 import axios from "axios";
+import LoadingScreen from "../pages/LoadingScreen";
 
 const Inbox = () => {
     const [currentChat, setCurrentChat] = useState("");
@@ -89,9 +90,7 @@ const Inbox = () => {
     // If profile is still loading, show a loader
     if (loadingChat) {
         return (
-            <div className="backgroundBlue flex items-center justify-center h-screen">
-                <p className="text-white text-xl">Loading chat...</p>
-            </div>
+            <LoadingScreen />
         );
     }
 
