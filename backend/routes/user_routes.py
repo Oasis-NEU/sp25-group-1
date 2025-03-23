@@ -515,7 +515,7 @@ def google_auth():
             user.save()
 
         token = create_access_token(identity=str(user.id), expires_delta=timedelta(hours=2))
-        return redirect(f"{frontend_url}/google-auth-success?token={quote(token)}")
+        return redirect(f"{frontend_url}google-auth-success?token={quote(token)}")
 
     except Exception as e:
         return jsonify({"error": str(e), "success": False, "status": 500})
