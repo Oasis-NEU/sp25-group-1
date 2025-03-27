@@ -113,3 +113,6 @@ To create a platform that connects designers and developers, enabling them to co
 - Support media sharing (images, design prototypes).  
 - Add AI-based matchmaking recommendations using ML models.  
 - Introduce gamification: badges, achievements for community engagement.
+
+## View Website
+https://codesign-group1.netlify.app/
